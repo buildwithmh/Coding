@@ -1,0 +1,72 @@
+services:
+  app:
+    build: .
+    container_name: mhcoder-app
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      PORT: 3000
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD in .env}
+      JAVA_RUNNER_URL: http://java-runner:3100
+      JAVA_RUNNER_TOKEN: ${JAVA_RUNNER_TOKEN:?Set JAVA_RUNNER_TOKEN in .env}
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: mhcoder
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD in .env}
+      MYSQL_DATABASE: mhcoder
+      AUDIT_FILE: /data/audit.log
+    volumes:
+      - mhcoder_audit:/data
+    depends_on:
+      mysql: { condition: service_healthy }
+      java-runner: { condition: service_started }
+    networks: [app_mysql, app_runner]
+    read_only: true
+    tmpfs: [/tmp:rw,nosuid,nodev,size=64m]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 1.0
+  java-runner:
+    build: ./java-runner
+    container_name: mhcoder-java-runner
+    restart: unless-stopped
+    environment:
+      JAVA_RUNNER_TOKEN: ${JAVA_RUNNER_TOKEN:?Set JAVA_RUNNER_TOKEN in .env}
+    networks: [app_runner]
+    read_only: true
+    tmpfs: [/tmp:rw,nosuid,nodev,size=128m]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 64
+    mem_limit: 384m
+    cpus: 1.0
+    # The runner has no published host port and is isolated from the MySQL network.
+  mysql:
+    image: mysql:8.4
+    container_name: mhcoder-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
+      MYSQL_DATABASE: mhcoder
+      MYSQL_USER: mhcoder
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD in .env}
+    volumes: [mhcoder_mysql_data:/var/lib/mysql]
+    networks: [app_mysql]
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    mem_limit: 768m
+    cpus: 1.0
+volumes:
+  mhcoder_mysql_data:
+  mhcoder_audit:
+networks:
+  app_mysql:
+    internal: true
+  app_runner:
+    internal: true

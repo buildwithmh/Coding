@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MhCoder — Python 3.14 IDE</title>
+<style>
+:root{color-scheme:dark;--fs:14px;--lh:21px;--tfs:13px;--bg:#1e1e1e;--side:#252526;--act:#333;--tab:#2d2d2d;--bd:#3c3c3c;--tx:#d4d4d4;--mut:#858585;--st:#007acc;--stx:#fff;--title:#3c3c3c;--hi:#2a2d2e;--inp:#3c3c3c;--sel:#264f78;--ac:#04395e;--k:#c586c0;--s:#ce9178;--c:#6a9955;--n:#b5cea8;--b:#4ec9b0;--d:#dcdcaa;--df:#569cd6;--p0:#ffd700;--p1:#da70d6;--p2:#179fff;--ff:Menlo,Consolas,"Courier New",monospace;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html[data-theme=light]{color-scheme:light;--bg:#fff;--side:#f3f3f3;--act:#2c2c2c;--tab:#ececec;--bd:#d4d4d4;--tx:#1f1f1f;--mut:#6e6e6e;--title:#dddddd;--hi:#e8e8e8;--inp:#fff;--sel:#add6ff;--ac:#d6ebff;--k:#af00db;--s:#a31515;--c:#008000;--n:#098658;--b:#267f99;--d:#795e26;--df:#0000ff;--p0:#0431fa;--p1:#319331;--p2:#7b3814}
+html[data-theme=monokai]{--bg:#272822;--side:#1e1f1c;--act:#1e1f1c;--tab:#1e1f1c;--bd:#3e3d32;--tx:#f8f8f2;--title:#1e1f1c;--hi:#3e3d32;--sel:#49483e;--st:#414339;--k:#f92672;--s:#e6db74;--c:#75715e;--n:#ae81ff;--b:#66d9ef;--d:#a6e22e;--df:#66d9ef;--inp:#3e3d32;--ac:#49483e}
+html[data-theme=solar]{--bg:#002b36;--side:#00212b;--act:#003847;--tab:#00212b;--bd:#073642;--tx:#93a1a1;--title:#00212b;--hi:#073642;--sel:#274642;--st:#073642;--k:#859900;--s:#2aa198;--c:#586e75;--n:#d33682;--b:#268bd2;--d:#b58900;--df:#268bd2;--inp:#073642;--ac:#073642}
+html[data-theme=hc]{--bg:#000;--side:#000;--act:#000;--tab:#000;--bd:#6fc3df;--tx:#fff;--mut:#ccc;--title:#000;--hi:#1a1a1a;--sel:#264f78;--st:#000;--inp:#000;--ac:#003a62}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--tx);font:13px -apple-system,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden}
+*{box-sizing:border-box}button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}input,select,textarea{font:inherit}
+#app{display:flex;flex-direction:column;height:100%;position:relative}
+#title{height:30px;background:var(--title);display:flex;align-items:center;flex:none;position:relative}
+#logo{width:46px;text-align:center;color:#58a6ff}
+#menubar{display:flex;overflow:hidden}#menubar button{padding:4px 8px;border-radius:4px}#menubar button:hover{background:var(--hi)}
+#cc{position:absolute;left:50%;transform:translateX(-50%);background:var(--inp);border:1px solid var(--bd);border-radius:6px;padding:2px 40px;color:var(--mut);cursor:pointer;max-width:34%;white-space:nowrap;overflow:hidden}
+#by{margin-left:auto;padding:0 12px;color:#4fc1ff;font-weight:600;white-space:nowrap}
+#main{flex:1;display:flex;min-height:0}
+#act{width:46px;background:var(--act);display:flex;flex-direction:column;justify-content:space-between;flex:none}
+#act button{width:46px;height:46px;font-size:20px;filter:grayscale(1) brightness(1.4);opacity:.6;position:relative}
+#act button.on{opacity:1;box-shadow:inset 2px 0 #fff}#act button:hover{background:var(--hi);opacity:1}
+.badge{position:absolute;right:5px;bottom:6px;background:#007acc;color:#fff;border-radius:8px;font-size:10px;padding:0 5px;filter:none;display:none}
+#side{width:220px;background:var(--side);display:flex;flex-direction:column;flex:none;min-width:0}#side.hide{display:none}
+#sh{padding:10px 20px;font-size:11px;color:var(--mut);letter-spacing:.4px;flex:none}
+#sb{flex:1;overflow:auto}
+.sec{font-size:11px;font-weight:700;padding:4px 8px;background:var(--hi);display:flex;justify-content:space-between;align-items:center;cursor:pointer;position:sticky;top:0;z-index:1}
+.sec .tb button{font-size:14px;margin-left:8px;opacity:.8}
+.f{display:flex;gap:6px;padding:3px 8px 3px 20px;cursor:pointer;line-height:20px;align-items:center;white-space:nowrap}.f:hover{background:var(--hi)}.f.on{background:var(--ac)}
+.f .nm{flex:1;overflow:hidden;text-overflow:ellipsis}.f .dots{opacity:.5;padding:0 6px}.f .dot{font-size:10px}.f .gl{font-size:11px;margin-right:2px}
+.gM{color:#e2c08d}.gU{color:#73c991}.gD{color:#c74e39}
+.mu{color:var(--mut)}.pad{padding:10px 14px}.labcard{margin:9px;padding:10px;background:var(--hi);border:1px solid var(--bd);border-radius:6px}.labcard h4{margin:0 0 6px;font-size:13px}.labcard p{margin:5px 0 9px;line-height:1.45;color:var(--mut);white-space:normal}.labcard .bt{margin-top:6px}.metric{display:flex;gap:8px;flex-wrap:wrap;padding:9px}.metric span{background:var(--hi);padding:7px;border-radius:5px}.data-table{width:100%;border-collapse:collapse;font:12px var(--ff)}.data-table th,.data-table td{border:1px solid var(--bd);padding:5px 7px;text-align:left;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.data-table th{background:var(--hi);position:sticky;top:0}.data-wrap{overflow:auto;max-height:65vh;margin:8px}
+.sbx{padding:8px 10px;display:flex;flex-direction:column;gap:6px}
+.sbx input{width:100%;background:var(--inp);border:1px solid var(--bd);color:var(--tx);padding:5px;outline:0;border-radius:2px}.sbx input:focus{border-color:var(--st)}
+#db .r{display:flex;gap:6px;flex-wrap:wrap}#db .r button{padding:6px 12px}#dbgvars{overflow:auto;max-height:42vh}.bpmark{color:#f14c4c}
+.bt{background:#0e639c;color:#fff;padding:6px 10px;border-radius:2px;text-align:center;cursor:pointer}.bt.g{background:var(--inp);color:var(--tx)}
+.tg{display:flex;gap:4px}.tg button{padding:2px 8px;border:1px solid var(--bd);border-radius:3px}.tg button.on{background:#0e639c;color:#fff}
+.sr{padding:3px 14px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sr:hover{background:var(--hi)}
+.spl{flex:none;position:relative;z-index:3;touch-action:none}.spl::after{content:"";position:absolute;inset:-6px}
+#ssp{width:1px;background:var(--bd);cursor:ew-resize}
+#center{flex:1;display:flex;flex-direction:column;min-width:0}
+#tabbar{display:flex;background:var(--side);height:35px;flex:none;border-bottom:1px solid var(--bd)}
+#tabs{display:flex;flex:1;overflow-x:auto}
+.t{display:flex;align-items:center;gap:7px;padding:0 12px;background:var(--tab);color:var(--mut);border-right:1px solid var(--side);white-space:nowrap;cursor:pointer}
+.t.on{background:var(--bg);color:var(--tx);box-shadow:inset 0 1px var(--st)}.t i{font-style:normal;font-size:11px;padding:2px 4px;border-radius:3px;opacity:.7}.t i:hover{background:var(--bd)}.t b{font-size:10px}
+#rb{width:40px;font-size:18px}
+#crumb{height:22px;line-height:22px;padding:0 14px;color:var(--mut);flex:none;font-size:12px;white-space:nowrap;overflow:hidden}
+#body{flex:1;display:flex;flex-direction:column;min-height:0}#body.pr{flex-direction:row}
+#edcol{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0}
+#ed{flex:1;display:flex;min-height:0;position:relative}
+#edcol.noed #ed{display:none}#edcol.noed #wm{display:flex}#edcol.noed #crumb{visibility:hidden}
+#wm{display:none;flex:1;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:var(--mut)}
+#wml{font-size:70px;opacity:.25}#wm td{padding:4px 12px}#wm kbd{background:var(--inp);padding:2px 7px;border-radius:3px;font:12px var(--ff)}
+#wm{padding:28px;align-items:center;justify-content:center;color:var(--tx);overflow:auto}
+.welcome-mark{font-size:54px;color:#58a6ff;opacity:.9}.welcome-title{font-size:25px;font-weight:300;margin-top:8px}
+.welcome-sub{color:var(--mut);margin:5px 0 28px}.welcome-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;width:min(650px,100%)}
+.welcome-grid h3{font-size:17px;font-weight:500;margin:0 0 12px}.welcome-grid section{display:flex;flex-direction:column;gap:8px;min-width:0}
+.welcome-grid button{color:#4fc1ff;text-align:left;padding:7px 9px;border-radius:4px;white-space:normal}
+.welcome-grid button:hover{background:var(--hi)}#welcomeRecent .recent-file{display:block;width:100%;text-align:left;padding:7px 4px;color:#4fc1ff;overflow-wrap:anywhere}
+.welcome-help{margin-top:34px;color:var(--mut);font-size:12px;text-align:center}
+@media(max-width:600px){.welcome-grid{grid-template-columns:1fr;gap:22px}.welcome-title{font-size:21px}}
+
+#gut,#hl,#mk,#ta{font:var(--fs)/var(--lh) var(--ff);margin:0}
+#gut{width:56px;flex:none;text-align:right;padding:0 18px 0 0;color:var(--mut);overflow:hidden;white-space:pre;user-select:none;cursor:pointer}
+#wrap{position:relative;flex:1;min-width:0}
+#hl,#mk,#ta{position:absolute;inset:0;padding:0 8px;white-space:pre;border:0;width:100%;height:100%}
+#hl,#mk{overflow:hidden;pointer-events:none}#mk{color:transparent}
+#cl{position:absolute;left:0;right:0;height:var(--lh);border:1px solid var(--bd);background:#ffffff0a;pointer-events:none}
+#ruler{position:absolute;top:0;bottom:0;width:1px;background:#ffffff26;pointer-events:none;display:none}
+#ta{background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:var(--tx);resize:none;outline:0;overflow:auto}
+#ta::selection{background:var(--sel)}
+.k{color:var(--k)}.s{color:var(--s)}.c{color:var(--c)}.n{color:var(--n)}.b{color:var(--b)}.d{color:var(--d)}.df{color:var(--df)}.p0{color:var(--p0)}.p1{color:var(--p1)}.p2{color:var(--p2)}
+.mh{background:#613214;border-radius:2px}.mc{background:#515c6a;border-radius:2px}.wh{background:#ffffff1a;border-radius:2px}.bm{background:#ffffff33;outline:1px solid #888}
+.er{text-decoration:underline wavy #f14c4c;-webkit-text-decoration:underline wavy #f14c4c}.wn{text-decoration:underline wavy #cca700;-webkit-text-decoration:underline wavy #cca700}
+#mm{width:70px;flex:none;display:block;height:100%;cursor:pointer}
+#fw{position:absolute;top:0;right:80px;width:380px;max-width:94%;background:var(--side);box-shadow:0 2px 8px #000;padding:6px;z-index:4;display:none;gap:4px;flex-direction:column}
+#fw input{background:var(--inp);border:1px solid var(--bd);color:var(--tx);padding:3px 6px;outline:0;flex:1;min-width:0}#fw input:focus{border-color:var(--st)}
+#fw .r{display:flex;gap:4px;align-items:center}#fw button{padding:2px 6px;border-radius:3px}#fw button:hover,#fw button.on{background:var(--ac)}
+#fc{font-size:11px;min-width:56px}
+#ac,#sg{position:absolute;display:none;z-index:6;background:var(--side);border:1px solid var(--bd);box-shadow:0 2px 8px #000;font:13px var(--ff)}
+#ac{max-height:180px;overflow:auto;min-width:200px}#sg{padding:4px 8px;max-width:90%;white-space:nowrap;overflow:hidden}
+.ai{display:flex;justify-content:space-between;gap:14px;padding:3px 10px;cursor:pointer}.ai.on{background:var(--ac)}.ai i{font-style:normal;color:var(--mut);font-size:11px}
+#keys{display:none;gap:6px;padding:5px 8px;background:var(--side);overflow-x:auto;flex:none}
+@media(pointer:coarse){#keys{display:flex}}
+#keys button{background:var(--inp);border-radius:5px;padding:6px 12px;font:15px var(--ff);min-width:38px}
+#psp{height:1px;background:var(--bd);cursor:ns-resize}#body.pr #psp{width:1px;height:auto;cursor:ew-resize}
+#panel{height:260px;min-height:0;display:flex;flex-direction:column;flex:none;background:var(--bg)}
+#body.pr #panel{height:auto}
+#ph{display:flex;gap:16px;padding:0 14px;height:30px;align-items:center;font-size:11px;color:var(--mut);flex:none;letter-spacing:.3px;overflow-x:auto;white-space:nowrap}
+#ph span{cursor:pointer;height:30px;line-height:30px}#ph .a{color:var(--tx);border-bottom:1px solid var(--tx)}#ph .fl{flex:1;border:0;cursor:default}
+.pb{flex:1;overflow:auto;padding:2px 14px;display:none;font:var(--tfs)/1.5 var(--ff)}.pb.on{display:block}
+#ou{white-space:pre-wrap}#pv{padding:0}#pvf{width:100%;height:100%;border:0;background:#fff}
+#tout{white-space:pre-wrap;word-break:break-word}.err{color:#f48771}.sys{color:#9cdcfe}.pr{color:#6a9955}.lk{color:#4fc1ff;text-decoration:underline;cursor:pointer}
+#trow{display:flex;gap:6px}#tin{flex:1;background:transparent;border:0;outline:0;color:inherit;font:inherit;caret-color:var(--tx)}
+#status{height:22px;background:var(--st);color:var(--stx);font-size:12px;display:flex;align-items:center;padding:0 4px;gap:2px;flex:none;white-space:nowrap;overflow:hidden}
+#status .si{padding:0 7px;height:22px;line-height:22px;cursor:pointer}#status .si:hover{background:#ffffff26}#status .fl{flex:1}
+#pal{position:absolute;top:34px;left:50%;transform:translateX(-50%);width:min(600px,94%);background:var(--side);box-shadow:0 0 10px #000;z-index:9;display:none;border:1px solid var(--bd)}
+#pi{width:calc(100% - 12px);margin:6px;background:var(--inp);border:1px solid var(--st);color:var(--tx);padding:5px 8px;outline:0;font-size:14px}
+#pl{max-height:300px;overflow:auto}.pi{display:flex;justify-content:space-between;padding:4px 12px;cursor:pointer}.pi.on{background:var(--ac)}.pi kbd{font:11px var(--ff);color:var(--mut);background:var(--inp);padding:1px 5px;border-radius:3px}
+#menu,#ctx{position:absolute;display:none;z-index:20;background:var(--side);border:1px solid var(--bd);box-shadow:0 2px 10px #000;min-width:190px;padding:4px 0;max-height:80vh;overflow:auto}
+#ctx{position:fixed}#menu div{display:flex;justify-content:space-between;gap:30px;padding:5px 20px;cursor:pointer}#ctx div{padding:6px 20px;cursor:pointer}#menu div:hover,#ctx div:hover{background:var(--ac)}#menu kbd{font:11px var(--ff);color:var(--mut)}
+#qi{position:absolute;top:34px;left:50%;transform:translateX(-50%);width:min(560px,94%);background:var(--side);border:1px solid var(--bd);box-shadow:0 0 10px #000;z-index:12;display:none;padding:8px 8px 6px}
+#qt{margin:0 2px 6px}#qin{width:100%;background:var(--inp);border:1px solid var(--st);color:var(--tx);padding:5px 8px;outline:0;font-size:14px}
+#qe{background:#5a1d1d;border:1px solid #be1100;color:#fff;padding:4px 8px;display:none}#qe:not(:empty){display:block}#qh{color:var(--mut);font-size:11px;margin:6px 2px 0}
+#md,#dv,#set{position:absolute;inset:0;background:#0007;z-index:15;display:none;align-items:center;justify-content:center}
+#mb,#dvb,#setb{background:var(--side);border:1px solid var(--bd);box-shadow:0 0 14px #000;width:min(420px,92%);padding:18px 20px}
+#dvb{width:min(760px,96%);max-height:86%;display:flex;flex-direction:column}#dvc{overflow:auto;font:12px/1.5 var(--ff);white-space:pre;margin:10px 0;flex:1}
+#dvc .a{background:#1b4721;display:block}#dvc .r{background:#5a1d1d;display:block}#dvc .x{color:var(--mut);display:block}
+#setb{width:min(520px,94%);max-height:88%;display:flex;flex-direction:column}#setl{overflow:auto;flex:1}
+#seth{display:flex;justify-content:space-between;font-size:15px;margin-bottom:10px}
+.sr2{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)}.sr2 select,.sr2 input[type=number]{background:var(--inp);color:var(--tx);border:1px solid var(--bd);padding:3px 6px}
+#mm1{font-size:15px;margin-bottom:8px}#mm2{color:var(--mut);margin-bottom:18px;line-height:1.5}
+#mbt{display:flex;justify-content:flex-end;gap:8px}#mbt button,#dvx{padding:6px 16px;border-radius:2px;background:#0e639c;color:#fff;align-self:flex-end}#mbt #mcn{background:var(--inp);color:var(--tx)}
+#toasts{position:absolute;right:14px;bottom:30px;z-index:14;display:flex;flex-direction:column;gap:8px;align-items:flex-end;pointer-events:none}
+.toast{background:var(--side);border:1px solid var(--bd);border-left:3px solid var(--st);padding:9px 16px;box-shadow:0 2px 8px #000;max-width:80vw}.toast.err{border-left-color:#f14c4c}
+#notif{position:absolute;right:8px;bottom:26px;width:min(340px,94%);max-height:50%;overflow:auto;background:var(--side);border:1px solid var(--bd);box-shadow:0 2px 10px #000;z-index:14;display:none}
+#notif div{padding:8px 12px;border-bottom:1px solid var(--bd)}
+#zx{position:absolute;top:6px;right:10px;z-index:30;display:none;background:var(--inp);padding:4px 10px;border-radius:4px;opacity:.7}
+.zen #title,.zen #act,.zen #side,.zen #ssp,.zen #status,.zen #panel,.zen #psp,.zen #tabbar,.zen #crumb{display:none!important}.zen #zx{display:block}
+@media(max-width:760px){#mm{display:none}#side{position:absolute;left:46px;top:30px;bottom:22px;z-index:5;box-shadow:4px 0 12px #0008}#cc,#by{display:none}}
+#vkb{display:none;flex:none;gap:4px;padding:4px 6px;background:var(--side);border-top:1px solid var(--bd);overflow-x:auto;touch-action:manipulation}#vkb.on{display:flex}#vkb button{flex:none;min-width:44px;height:34px;padding:0 10px;border:1px solid var(--bd);border-radius:6px;background:var(--inp);font-size:14px}#vkb button.on{background:#0e639c;color:#fff;border-color:#0e639c}
+
+#runmeta{display:flex;align-items:center;gap:7px;padding:5px 10px;background:var(--side);border-bottom:1px solid var(--bd);font-size:12px;color:var(--mut)}
+#runmeta button{padding:4px 10px;border:1px solid var(--bd);border-radius:4px;background:var(--inp);color:var(--tx)}
+#runmeta .primary{background:#0e639c;color:white;border-color:#0e639c}
+#runmeta .spacer{flex:1}#runmeta input{min-width:90px;width:130px;background:var(--inp);border:1px solid var(--bd);color:var(--tx);padding:4px 6px;border-radius:4px}
+#ide-result{padding:8px 10px;border-top:1px solid var(--bd);font:12px/1.5 var(--ff);white-space:pre-wrap;overflow:auto;max-height:38vh;background:var(--side);display:none}
+#ide-result table{border-collapse:collapse;width:100%;white-space:normal}#ide-result td,#ide-result th{border:1px solid var(--bd);padding:5px 8px;text-align:left}#ide-result .ok{color:#4ec9b0}#ide-result .bad{color:#f48771}
+#ide-preview{position:fixed;inset:5vh 3vw;z-index:25;background:#fff;border:1px solid #888;box-shadow:0 8px 40px #000a;display:none;flex-direction:column}#ide-preview header{display:flex;justify-content:space-between;align-items:center;background:#20242b;color:#fff;padding:8px 12px}#ide-preview iframe{flex:1;border:0;width:100%}
+@media(max-width:760px){#runmeta{flex-wrap:wrap}#runmeta input{width:95px}#ide-preview{inset:2vh 2vw}}
+</style>
+</head>
+<body>
+<div id="app">
+ <div id="title"><span id="logo">❮❯</span><div id="menubar"></div><div id="cc">MhCoder — Professional IDE</div><span id="by">Multi-Language IDE</span></div>
+ <div id="main">
+  <div id="act"><div><button data-v="ex" class="on" title="Explorer">▤</button><button data-v="se" title="Search">⌕</button><button data-v="sc" title="Source Control">⑂<span class="badge" id="scb"></span></button><button data-v="ru" title="Run and Debug">▷</button><button data-v="xt" title="Python Packages">▦</button><button data-v="lab" title="Python Practice">🧠</button><button data-v="data" title="Data Explorer">▧</button></div><div><button id="acct" title="MH Sompod">👤</button><button id="gear" title="Manage">⚙</button></div></div>
+  <div id="side"><div id="sh">EXPLORER</div><div id="sb"></div></div>
+  <div id="ssp" class="spl"></div>
+  <div id="center">
+   <div id="tabbar"><div id="tabs"></div><button id="rb" title="Run Python File (F5)">▷</button></div>
+   <div id="crumb"></div>
+   <div id="body">
+    <div id="edcol"><div id="runmeta"><strong id="ide-language">Python</strong><span id="ide-hint">Choose a source file and press Run</span><span class="spacer"></span><input id="ide-stdin" aria-label="Program input" placeholder="Java stdin (optional)"><input id="ide-db" aria-label="Database name" value="mhcoder" placeholder="Database"><button id="ide-preview-btn">Preview</button><button id="ide-run-btn" class="primary">▶ Run / Execute</button></div><div id="ide-result" aria-live="polite"></div>
+     <div id="ed"><div id="gut"></div>
+      <div id="wrap"><div id="cl"></div><pre id="mk"></pre><pre id="hl"></pre><div id="ruler"></div><div id="ac"></div><div id="sg"></div><textarea id="ta" wrap="off" spellcheck="false" autocapitalize="off" autocorrect="off" autocomplete="off"></textarea></div>
+      <canvas id="mm"></canvas>
+      <div id="fw"><div class="r"><input id="fi" placeholder="Find"><button id="fcase" title="Match Case (Alt+C)">Aa</button><button id="fword" title="Whole Word (Alt+W)">ab</button><button id="freg" title="Regex (Alt+R)">.*</button><span id="fc"></span><button id="fp">↑</button><button id="fn">↓</button><button id="fx">✕</button></div><div class="r" id="rr"><input id="ri" placeholder="Replace"><button id="r1">Replace</button><button id="ra">All</button></div></div>
+     </div>
+     <div id="wm">
+      <div class="welcome-mark">❮❯</div>
+      <div class="welcome-title">MhCoder</div>
+      <div class="welcome-sub">Professional Multi-Language IDE</div>
+      <div class="welcome-grid">
+       <section><h3>Start</h3>
+        <button data-welcome="new">＋ New Python File</button>
+        <button data-welcome="file">↗ Open Python File…</button>
+        <button data-welcome="folder">📁 Open Folder…</button>
+        <button data-welcome="zip">▣ Import Python Project (.zip)…</button>
+       </section>
+       <section><h3>Recent</h3><div id="welcomeRecent">No recent files</div></section>
+      </div>
+      <div class="welcome-help">Python · HTML · CSS · Java · MySQL · Run with F5</div>
+     </div>
+     <div id="keys"></div>
+    </div>
+    <div id="psp" class="spl"></div>
+    
+     <div id="panel"><div id="ph"><span data-p="pr">PROBLEMS</span><span data-p="ou">OUTPUT</span><span data-p="db">DEBUG CONSOLE</span><span data-p="term" class="a">TERMINAL</span><span class="fl"></span><span id="pclr" title="Clear">⊘</span><span id="pmx" title="Maximize / Restore Panel">⌃</span><span id="pcl" title="Close Panel">✕</span></div>
+     <div class="pb" id="pr">No problems have been detected in the workspace.</div><div class="pb" id="ou"></div><div class="pb" id="db"><div class="sbx"><b>Python Debug Console</b><div id="dbgstate" class="mu">Debugger idle. Set breakpoints with Ctrl/⌘ + tap on a line number.</div><div class="r"><button class="bt" data-dbg="step">Step</button><button class="bt g" data-dbg="continue">Continue</button><button class="bt g" data-dbg="stop">Stop</button></div><div class="sec">CALL STACK</div><div id="dbgstack" class="mu">No stack frame.</div><div class="sec">VARIABLES</div><div id="dbgvars" class="mu">No paused frame.</div></div></div>
+     <div class="pb on" id="term"><div id="tout"></div><div id="trow"><span class="pr" id="tp"></span><input id="tin" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="help"></div></div>
+     </div>
+   </div>
+  </div>
+ </div>
+<div id="vkb"><button data-m="c">Ctrl</button><button data-m="a">Alt</button><button data-m="s">Shift</button><button data-k="Escape">Esc</button><button data-k="ArrowLeft">←</button><button data-k="ArrowUp">↑</button><button data-k="ArrowDown">↓</button><button data-k="ArrowRight">→</button><button data-x="fk">Fn</button><button data-x="save">Save</button><button data-x="find">Find</button><button data-x="comment" title="Toggle Line Comment (Ctrl+/)"># Comment</button><button data-x="pal">Cmd</button><button data-x="run">▶ Run</button></div>
+ <div id="status"><span id="sbr" class="si">⎇ main</span><span id="ec" class="si">⊗ 0 ⚠ 0</span><span id="msg" class="si"></span><span class="fl"></span><span id="pos" class="si">Ln 1, Col 1</span><span id="tabb" class="si">Spaces: 4</span><span id="enc" class="si">UTF-8</span><span id="eolb" class="si">LF</span><span id="engb" class="si">{} Python (loading…)</span><span id="bell" class="si">🔔</span></div>
+ <div id="pal"><input id="pi" autocapitalize="off" spellcheck="false"><div id="pl"></div></div>
+ <div id="ide-preview"><header><strong>Live Preview</strong><button id="ide-preview-close">Close ✕</button></header><iframe sandbox="allow-scripts allow-forms allow-modals" title="HTML preview"></iframe></div>
+ <div id="menu"></div><div id="ctx"></div>
+ <div id="qi"><div id="qt"></div><input id="qin" autocapitalize="off" spellcheck="false"><div id="qe"></div><div id="qh">Press 'Enter' to confirm your input or 'Escape' to cancel</div></div>
+ <div id="md"><div id="mb"><div id="mm1"></div><div id="mm2"></div><div id="mbt"><button id="mok">OK</button><button id="mcn">Cancel</button></div></div></div>
+ <div id="dv"><div id="dvb"><div id="dvt"></div><div id="dvc"></div><button id="dvx">Close</button></div></div>
+ <div id="set"><div id="setb"><div id="seth"><span>Settings</span><button id="setx">✕</button></div><div id="setl"></div></div></div>
+ <div id="notif"></div><div id="toasts"></div><button id="zx">✕ Exit Zen Mode</button>
+ <input type="file" id="fin" accept=".py,.md,.txt,.csv,.tsv,.json,.html,.css,.js,.xml,.yaml,.yml,.toml,.sql,.java,text/*" multiple hidden><input type="file" id="fdir" webkitdirectory multiple hidden><input type="file" id="fzip" accept=".zip" hidden>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],ta=$('#ta'),hl=$('#hl'),mk=$('#mk'),gut=$('#gut'),tout=$('#tout');
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const isText=n=>/\.(py|pyw|txt|md|markdown|html|htm|css|js|json|csv|tsv|xml|yaml|yml|toml|ini|sql|java|sh|log)$/i.test(n);
+const DEF={fs:14,tfs:13,tab:4,theme:'dark',minimap:true,ln:true,ruler:false,crumbs:true,pairs:true,auto:true,trim:false,fnl:false,fmt:false,runsave:false,clr:false,eol:'LF',ppos:'bottom',ph:260,pw:380,sw:220};
+let S={...DEF},files={},dirs=new Set(),open=[],active='',base={},commits=[],recent=[],collapsed=new Set(),unsaved=new Set(),closed=[],wsName='MhCoder';
+let vw='ex',eng='',py=null,busy=false,jedi=false,flakes=false,fmtOK=false,diag=[],handle=null,fileH={},cwd='',repl=false,replG=null,hist=[],histI=0,notes=[],readyP=null,lintT=0,wbT=0,acI=[],acS=0,acP='',acTok=0,acT=0,acSkip=false,sgT=0,cwf=0,cwv=0,chord=0,selStack=[],SO={c:0,w:0,r:0},FO={c:0,w:0,r:0},pmax=false,cmdRecent=[],crT=0,olT=0;
+const NB=[],NF=[];
+let ghCfg={owner:'',repo:'',branch:'main'},ghToken='',ghBusy=false;try{ghCfg={...ghCfg,...JSON.parse(localStorage.getItem('mh_gh_cfg')||'{}')}}catch(e){}
+const breakpoints=new Set();const bpKey=(line,file=active)=>file+'\u0000'+line;const bpHas=(line,file=active)=>breakpoints.has(bpKey(line,file));const bpToggle=(line,file=active)=>{const k=bpKey(line,file);if(breakpoints.has(k)){breakpoints.delete(k);return false}breakpoints.add(k);return true};const bpLines=(file=active)=>[...breakpoints].filter(k=>k.startsWith(file+'\u0000')).map(k=>Number(k.slice(k.lastIndexOf('\u0000')+1))).sort((a,b)=>a-b);let dbg={active:false,paused:false,wait:null,resolve:null,stop:false,line:0,locals:[],steps:0};
+const LH=()=>Math.round(S.fs*1.5);
+const WELCOME="# Welcome to MhCoder - by MH Sompod\nname = input('Tomar nam? ')\nprint('Hello,', name)\n\nimport numpy as np\nprint(np.arange(6) ** 2)\n";
+(function load(){let d=null;try{d=JSON.parse(localStorage.getItem('mh3')||'null')}catch(e){}
+ if(d){files=d.files||{};dirs=new Set(d.dirs||[]);open=d.open||[];active=d.active||'';S={...DEF,...d.S};base=d.base||{};commits=d.commits||[];recent=d.recent||[];collapsed=new Set(d.collapsed||[])}
+ else{try{const f=JSON.parse(localStorage.getItem('mh_files')||'null');if(f)files=f}catch(e){}}
+ if(!Object.keys(files).length)files={'main.py':WELCOME};
+ Object.keys(files).forEach(n=>{if(!isText(n))delete files[n]});
+  open=open.filter(n=>n in files);if(active&&!(active in files))active='';
+ if(!d){open=[Object.keys(files)[0]];active=open[0]}})();
+function store(){try{localStorage.setItem('mh3',JSON.stringify({files,dirs:[...dirs],open,active,S,base,commits,recent,collapsed:[...collapsed]}))}catch(e){}}
+function apply(){const r=document.documentElement;r.dataset.theme=S.theme;r.style.setProperty('--fs',S.fs+'px');r.style.setProperty('--lh',LH()+'px');r.style.setProperty('--tfs',S.tfs+'px');
+ ta.style.setProperty('tab-size',S.tab);hl.style.setProperty('tab-size',S.tab);
+ $('#mm').style.display=S.minimap?'':'none';gut.style.display=S.ln?'':'none';$('#crumb').style.display=S.crumbs?'':'none';
+ $('#body').classList.toggle('pr',S.ppos==='right');const p=$('#panel');
+ if(S.ppos==='right'){p.style.height='';p.style.width=S.pw+'px'}else{p.style.width='';p.style.height=S.ph+'px'}
+ $('#side').style.width=S.sw+'px';$('#eolb').textContent=S.eol;$('#tabb').textContent='Spaces: '+S.tab;paint()}
+const KW=new Set('False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield'.split(' '));
+const BI=new Set('print input len range int str float list dict set tuple bool sum min max abs sorted enumerate zip map filter open type isinstance round reversed any all self super'.split(' '));
+function hi(code){
+ const re=/(#[^\n]*)|("""[\s\S]*?(?:"""|$)|'''[\s\S]*?(?:'''|$)|"(?:\\.|[^"\\\n])*"?|'(?:\\.|[^'\\\n])*'?)|(\b\d+\.?\d*\b)|([A-Za-z_]\w*)|([()[\]{}])/g;
+ let o='',last=0,m,prev='',dp=0;
+ while((m=re.exec(code))){o+=esc(code.slice(last,m.index));last=re.lastIndex;const t=esc(m[0]);
+  if(m[1])o+='<span class="c">'+t+'</span>';else if(m[2])o+='<span class="s">'+t+'</span>';else if(m[3])o+='<span class="n">'+t+'</span>';
+  else if(m[5]){const ch=m[5];if(')]}'.includes(ch))dp=Math.max(0,dp-1);o+='<span class="p'+(dp%3)+'">'+ch+'</span>';if('([{'.includes(ch))dp++}
+  else{const w=m[4];o+=KW.has(w)?'<span class="k">'+w+'</span>':(prev==='def'||prev==='class')?'<span class="d">'+w+'</span>':BI.has(w)?'<span class="b">'+w+'</span>':code[last]==='('?'<span class="d">'+w+'</span>':w;prev=w;continue}
+  prev=''}
+ return o+esc(code.slice(last))+'\n'}
+const lineOf=p=>ta.value.slice(0,p).split('\n').length-1;
+function bmatch(){const v=ta.value,p=ta.selectionStart;if(p!==ta.selectionEnd)return null;const O='([{',Cl=')]}';let i=-1;
+ if(O.includes(v[p]||'x'))i=p;else if(p>0&&Cl.includes(v[p-1]||'x'))i=p-1;else if(p>0&&O.includes(v[p-1]||'x'))i=p-1;else if(Cl.includes(v[p]||'x'))i=p;if(i<0)return null;
+ const ch=v[i],op=O.includes(ch),pair=op?Cl[O.indexOf(ch)]:O[Cl.indexOf(ch)];let d=0,lim=20000;
+ if(op){for(let j=i;j<v.length&&lim--;j++){if(v[j]===ch)d++;else if(v[j]===pair){d--;if(!d)return[i,j]}}}
+ else{for(let j=i;j>=0&&lim--;j--){if(v[j]===ch)d++;else if(v[j]===pair){d--;if(!d)return[j,i]}}}return null}
+function marks(){const v=ta.value,R=[];
+ if(fwOpen()){mAll().forEach(r=>R.push([r[0],r[1],r[0]===ta.selectionStart?'mc':'mh']))}
+ else{const s=ta.selectionStart,e=ta.selectionEnd;let wd=v.slice(s,e);if(!wd)wd=/\w*$/.exec(v.slice(0,s))[0]+/^\w*/.exec(v.slice(s))[0];
+  if(/^\w{2,}$/.test(wd)&&v.length<60000){const re=new RegExp('\\b'+wd+'\\b','g');let m,c=0;while((m=re.exec(v))&&c++<300)R.push([m.index,m.index+wd.length,'wh'])}}
+ diag.forEach(d=>R.push([d.s,d.e,d.sev]));
+ const bm=bmatch();if(bm){R.push([bm[0],bm[0]+1,'bm']);R.push([bm[1],bm[1]+1,'bm'])}
+ if(!R.length){mk.innerHTML='';return}
+ const pts=[...new Set([0,v.length,...R.flatMap(r=>[r[0],r[1]])])].filter(x=>x<=v.length).sort((a,b)=>a-b);let o='';
+ for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1],cl=R.filter(r=>r[0]<=a&&r[1]>=b).map(r=>r[2]).join(' ');o+=cl?'<span class="'+cl+'">'+esc(v.slice(a,b))+'</span>':esc(v.slice(a,b))}
+ mk.innerHTML=o+'\n'}
+function cw(){if(cwf!==S.fs){const g=document.createElement('canvas').getContext('2d');g.font=S.fs+'px Menlo,Consolas,"Courier New",monospace';cwv=g.measureText('M').width;cwf=S.fs}return cwv}
+function paint(){const v=ta.value;hl.innerHTML=hi(v);const n=v.split('\n').length;let g='';for(let i=1;i<=n;i++)g+=(bpHas(i)?'● ':'  ')+i+'\n';gut.textContent=g;$('#ruler').style.display=S.ruler?'block':'none';marks();sync();pos();mmap();clearTimeout(crT);crT=setTimeout(crumb,120)}
+function sync(){hl.scrollTop=mk.scrollTop=gut.scrollTop=ta.scrollTop;hl.scrollLeft=mk.scrollLeft=ta.scrollLeft;$('#ruler').style.left=(8+88*cw()-ta.scrollLeft)+'px';$('#cl').style.top=(lineOf(ta.selectionEnd)*LH()-ta.scrollTop)+'px';mmap()}
+function pos(){const s=ta.selectionStart,e=ta.selectionEnd,b=ta.value.slice(0,e).split('\n'),n=e-s;$('#pos').textContent='Ln '+b.length+', Col '+(b[b.length-1].length+1)+(n?' ('+n+' selected)':'');$('#cl').style.top=((b.length-1)*LH()-ta.scrollTop)+'px'}
+function mmap(){const c=$('#mm');if(!c.offsetWidth)return;const H=c.height=c.clientHeight,W=c.width=70,g=c.getContext('2d');
+ ta.value.split('\n').slice(0,Math.floor(H/3)).forEach((l,i)=>{const t=l.trim();if(!t)return;const x=4+(l.length-l.trimStart().length)*1.2;g.fillStyle=t[0]==='#'?'#6a995588':'#9a9a9a88';g.fillRect(x,i*3,Math.min(t.length*1.2,W-x-4),2)});
+ g.fillStyle='#79797933';g.fillRect(0,ta.scrollTop/LH()*3,W,ta.clientHeight/LH()*3)}
+function symbols(){const o=[];ta.value.split('\n').forEach((l,i)=>{const m=/^(\s*)(?:async\s+)?(def|class)\s+(\w+)/.exec(l);if(m)o.push({n:m[3],k:m[2],l:i+1,i:m[1].length})});return o}
+function chain(){const L=lineOf(ta.selectionStart)+1,st=[];for(const s of symbols()){if(s.l>L)break;while(st.length&&st[st.length-1].i>=s.i)st.pop();st.push(s)}return st}
+function crumb(){if(!S.crumbs)return;$('#crumb').innerHTML=esc(wsName)+(active?' › '+esc(active).split('/').join(' › '):'')+(active?chain().map(s=>' › <span class="'+(s.k==='class'?'k':'d')+'">'+(s.k==='class'?'◆':'ƒ')+' '+esc(s.n)+'</span>').join(''):'')}
+const ico=n=>'🐍';
+function gst(p){return!(p in base)?'U':base[p]!==files[p]?'M':''}
+function tree(){const root={d:{},f:[],p:''};const add=(p,isD)=>{const parts=p.split('/');let cur=root;parts.forEach((x,i)=>{if(i===parts.length-1&&!isD)cur.f.push([x,p]);else cur=cur.d[x]=cur.d[x]||{d:{},f:[],p:parts.slice(0,i+1).join('/')}})};dirs.forEach(d=>add(d,true));Object.keys(files).forEach(p=>add(p,false));return root}
+function exRows(n,dep){let o='';for(const k of Object.keys(n.d).sort()){const c=n.d[k],cl=collapsed.has(c.p);o+='<div class="f" data-d="'+esc(c.p)+'" style="padding-left:'+(8+dep*12)+'px"><span>'+(cl?'▸':'▾')+'</span><span class="nm">'+esc(k)+'</span></div>';if(!cl)o+=exRows(c,dep+1)}
+ n.f.sort((a,b)=>a[0].localeCompare(b[0])).forEach(([nm,p])=>{const st=gst(p);o+='<div class="f'+(p===active?' on':'')+(st?' g'+st:'')+'" data-n="'+esc(p)+'" style="padding-left:'+(20+dep*12)+'px"><span>'+ico(nm)+'</span><span class="nm">'+esc(nm)+'</span>'+(unsaved.has(p)?'<span class="dot">●</span>':'')+(st?'<span class="gl">'+st+'</span>':'')+'<span class="dots" data-n="'+esc(p)+'">⋯</span></div>'});return o}
+const sh_=(k,t)=>'<div class="sec" data-s="'+k+'"><span>'+(collapsed.has('s:'+k)?'▸':'▾')+' '+t+'</span>';
+function viewEx(){let h=sh_('oe','OPEN EDITORS')+'</div>';
+ if(!collapsed.has('s:oe'))h+=open.map(n=>'<div class="f'+(n===active?' on':'')+'" data-n="'+esc(n)+'"><span>'+ico(n)+'</span><span class="nm">'+esc(n.split('/').pop())+'</span><span class="mu">'+esc(n.includes('/')?n.slice(0,n.lastIndexOf('/')):'')+'</span></div>').join('');
+ h+=sh_('ws',esc(wsName.toUpperCase()))+'<span class="tb"><button data-a="nf" title="New File">＋</button><button data-a="nd" title="New Folder">▤</button><button data-a="rf" title="Refresh">⟳</button><button data-a="ca" title="Collapse All">⊟</button></span></div>';
+ if(!collapsed.has('s:ws'))h+=exRows(tree(),0);
+ h+=sh_('ol','OUTLINE')+'</div>';if(!collapsed.has('s:ol')){const sy=active?symbols():[];h+=sy.length?sy.map(s=>'<div class="f" data-ol="'+s.l+'" style="padding-left:'+(20+Math.floor(s.i/2)*6)+'px"><span class="'+(s.k==='class'?'k':'d')+'">'+(s.k==='class'?'◆':'ƒ')+'</span><span class="nm">'+esc(s.n)+'</span></div>').join(''):'<div class="mu pad">No symbols found</div>'}
+ $('#sb').innerHTML=h}
+function sRegex(q,O){if(!q)return null;try{let s=O.r?q:q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');if(O.w)s='\\b'+s+'\\b';return new RegExp(s,O.c?'g':'gi')}catch(e){return null}}
+function viewSearch(){$('#sb').innerHTML='<div class="sbx"><input id="si" placeholder="Search"><div class="tg"><button data-t="c" title="Match Case">Aa</button><button data-t="w" title="Whole Word">ab</button><button data-t="r" title="Regex">.*</button></div><input id="sr2" placeholder="Replace"><div class="bt g" data-a="repall">Replace All</div></div><div id="sres"></div>';$('#si').focus()}
+function doSearch(){const re=sRegex(($('#si')||{}).value,SO),box=$('#sres');if(!box)return;if(!re){box.innerHTML='';return}
+ let h='',n=0,fc=0;for(const p in files){const L=files[p].split('\n');let rows='',c=0;L.forEach((l,i)=>{re.lastIndex=0;const m=re.exec(l);if(m&&n<500){c++;n++;rows+='<div class="sr" data-n="'+esc(p)+'" data-l="'+(i+1)+'" data-c="'+m.index+'" data-len="'+m[0].length+'">'+esc(l.trim().slice(0,80))+'</div>'}});if(c){fc++;h+='<div class="sec"><span>'+esc(p)+'</span><span>'+c+'</span></div>'+rows}}
+ box.innerHTML='<div class="mu pad">'+(n?n+' results in '+fc+' files':'No results')+'</div>'+h}
+async function replAll(){const re=sRegex($('#si').value,SO);if(!re)return;const r=$('#sr2').value;if(!await confirmBox('Replace all matches?','This changes matching files in your workspace.','Replace'))return;let n=0;
+ for(const p in files){const c=(files[p].match(re)||[]).length;if(c){n+=c;files[p]=files[p].replace(re,r);if(handle)wb(p)}}store();render();toast('Replaced '+n+' matches')}
+function chg(){const o=[];for(const p in files){if(!(p in base))o.push([p,'U']);else if(base[p]!==files[p])o.push([p,'M'])}for(const p in base)if(!(p in files))o.push([p,'D']);return o}
+function viewScm(){const c=chg();$('#sb').innerHTML='<div class="sbx"><input id="cm" placeholder="Commit message (Enter to commit)"><div class="bt" data-a="commit">✓ Local Commit All</div><div class="sec"><span>GITHUB</span></div><div class="mu">'+(ghCfg.owner?esc(ghCfg.owner+'/'+ghCfg.repo+' · '+ghCfg.branch):'No GitHub repository connected')+'</div><div class="bt g" data-a="ghconnect">'+(ghCfg.owner?'⚙ Configure GitHub':'＋ Connect GitHub')+'</div><div class="bt" data-a="ghpush">↑ Push to GitHub</div><div class="bt g" data-a="ghpull">↓ Pull from GitHub</div><div class="mu">Token stays in this tab session only. Create a fine-grained token with Contents read/write access.</div></div><div class="sec"><span>CHANGES</span><span>'+c.length+'</span></div>'+(c.length?c.map(([p,s])=>'<div class="f g'+s+'" data-df="'+esc(p)+'"><span class="nm">'+esc(p)+'</span><span data-a="disc" data-n="'+esc(p)+'" title="Discard Changes">↶</span><span class="gl">'+s+'</span></div>').join(''):'<div class="mu pad">No changes</div>')+'<div class="sec"><span>LOCAL COMMITS</span></div>'+(commits.length?commits.slice(0,15).map(x=>'<div class="sr">● '+esc(x.msg)+' <span class="mu">'+new Date(x.t).toLocaleString()+'</span></div>').join(''):'<div class="mu pad">No commits yet</div>')}
+function scm(){const n=chg().length,b=$('#scb');b.textContent=n;b.style.display=n?'block':'none'}
+function doCommit(){const m=($('#cm')||{}).value;const msg=(m||'').trim();if(!msg)return toast('Enter a commit message first.','err');base={...files};commits.unshift({msg,t:Date.now()});store();refreshSide();scm();toast('Committed: '+msg)}
+async function discard(p){if(!await confirmBox('Discard changes in “'+p+'”?','This cannot be undone.','Discard'))return;if(p in base){files[p]=base[p]}else{delete files[p];open=open.filter(x=>x!==p);if(active===p)active=open[0]||''}store();render()}
+function diffLines(a,b){const n=a.length,m=b.length;if(n*m>4e6)return null;const dp=Array.from({length:n+1},()=>new Uint16Array(m+1));for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+ const o=[];let i=0,j=0;while(i<n&&j<m){if(a[i]===b[j]){o.push([' ',a[i]]);i++;j++}else if(dp[i+1][j]>=dp[i][j+1]){o.push(['-',a[i]]);i++}else{o.push(['+',b[j]]);j++}}while(i<n)o.push(['-',a[i++]]);while(j<m)o.push(['+',b[j++]]);return o}
+function showDiff(p){p=p||active;if(!p)return;const d=diffLines((base[p]||'').split('\n'),(files[p]===undefined?'':files[p]).split('\n'));$('#dvt').textContent='Changes: '+p+(p in base?'':' (untracked)');
+ if(!d){$('#dvc').textContent='File too large to diff.'}else{let h='',run=0;d.forEach((x,i)=>{const near=[-2,-1,0,1,2].some(k=>d[i+k]&&d[i+k][0]!==' ');if(x[0]===' '&&!near){run++;return}if(run){h+='<span class="x">⋯ '+run+' unchanged lines</span>';run=0}h+='<span class="'+(x[0]==='+'?'a':x[0]==='-'?'r':'x')+'">'+x[0]+' '+esc(x[1])+'</span>'});if(run)h+='<span class="x">⋯ '+run+' unchanged lines</span>';$('#dvc').innerHTML=h||'<span class="x">No differences.</span>'}
+ $('#dv').style.display='flex'}
+$('#dvx').onclick=()=>$('#dv').style.display='none';
+function viewRun(){const bps=bpLines();$('#sb').innerHTML='<div class="sbx"><div class="bt" data-a="runf">▶ Run Python File</div><div class="bt g" data-a="runs">▶ Run Selection / Line</div><div class="bt" data-a="debugstart">🐞 Start Debugging</div><div class="bt g" data-a="debugstop">■ Stop Debugging</div><div class="bt g" data-a="debugclear">Clear Breakpoints (this file)</div><div class="mu">Tap a line number to select it; Ctrl/⌘ + tap or double-tap to toggle a breakpoint. Stepping supports module-level statements, top-level control-flow blocks and async function bodies. Synchronous function and class bodies are not yet step-debuggable.</div><div id="bpview"></div></div>'+(bps.length?'<div class="sec"><span>BREAKPOINTS · '+esc(active)+'</span><span>'+bps.length+'</span></div>'+bps.map(n=>'<div class="sr" data-bpjump="'+n+'">● Line '+n+'</div>').join(''):'<div class="mu pad">No breakpoints in this file</div>')}
+// ---------------- GitHub (Git smart-object API over HTTPS) ----------------
+const ghBranchPath=()=>ghCfg.branch.split('/').map(encodeURIComponent).join('/');
+async function ghRequest(path,method='GET',body=null){if(!ghToken)throw new Error('GitHub token missing. Connect GitHub first.');const r=await fetch('https://api.github.com'+path,{method,headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+ghToken,'X-GitHub-Api-Version':'2022-11-28',...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined});const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.message||('GitHub API '+r.status));return data}
+async function ghConnect(){const owner=prompt('GitHub username / organization:',ghCfg.owner||'');if(!owner)return;const repo=prompt('Repository name:',ghCfg.repo||'');if(!repo)return;const branch=prompt('Branch name:',ghCfg.branch||'main')||'main';const token=prompt('GitHub Personal Access Token (fine-grained; Contents read/write). It stays in this tab only:');if(!token)return;ghToken=token.trim();ghCfg={owner:owner.trim(),repo:repo.trim(),branch:branch.trim()||'main'};try{await ghRequest('/repos/'+encodeURIComponent(ghCfg.owner)+'/'+encodeURIComponent(ghCfg.repo));localStorage.setItem('mh_gh_cfg',JSON.stringify(ghCfg));toast('Connected to '+ghCfg.owner+'/'+ghCfg.repo);viewScm()}catch(e){ghToken='';toast('GitHub connection failed: '+e.message,'err')}}
+async function ghPush(){if(ghBusy)return;if(!ghCfg.owner||!ghCfg.repo||!ghToken)return ghConnect();if(active)files[active]=ta.value;store();const count=Object.keys(files).filter(isText).length;if(!await confirmBox('Push workspace to GitHub?','This creates a remote commit in '+ghCfg.owner+'/'+ghCfg.repo+' ('+ghCfg.branch+') and uploads '+count+' local text files. Remote-only files will be preserved.','Push'))return;ghBusy=true;try{const root='/repos/'+encodeURIComponent(ghCfg.owner)+'/'+encodeURIComponent(ghCfg.repo),ref=await ghRequest(root+'/git/ref/heads/'+ghBranchPath()),head=await ghRequest(root+'/git/commits/'+ref.object.sha),tree=[];const remote=await ghRequest(root+'/git/trees/'+head.tree.sha+'?recursive=1');if(remote.truncated)throw new Error('Remote repository tree is too large to verify safely; push cancelled.');for(const [path,content] of Object.entries(files)){if(!isText(path))continue;const blob=await ghRequest(root+'/git/blobs','POST',{content,encoding:'utf-8'});tree.push({path,mode:'100644',type:'blob',sha:blob.sha})}if(!tree.length){toast('No supported local text files to push','err');return}const nt=await ghRequest(root+'/git/trees','POST',{base_tree:head.tree.sha,tree});const co=await ghRequest(root+'/git/commits','POST',{message:'Update from MhCoder',tree:nt.sha,parents:[head.sha]});await ghRequest(root+'/git/refs/heads/'+ghBranchPath(),'PATCH',{sha:co.sha,force:false});base={...files};commits.unshift({msg:'GitHub: '+co.sha.slice(0,7),t:Date.now()});store();scm();refreshSide();toast('Pushed '+tree.length+' file changes to GitHub')}catch(e){toast('Push failed: '+e.message,'err')}finally{ghBusy=false}}
+async function ghPull(){if(ghBusy)return;if(!ghCfg.owner||!ghCfg.repo||!ghToken)return ghConnect();if((active&&ta.value!==files[active])||chg().length){toast('Save, commit, or discard local changes before pulling from GitHub.','err');return}if(!await confirmBox('Pull from GitHub?','The local workspace will be replaced by supported text files from '+ghCfg.owner+'/'+ghCfg.repo+'.','Pull'))return;ghBusy=true;try{const root='/repos/'+encodeURIComponent(ghCfg.owner)+'/'+encodeURIComponent(ghCfg.repo),ref=await ghRequest(root+'/git/ref/heads/'+ghBranchPath()),co=await ghRequest(root+'/git/commits/'+ref.object.sha),tr=await ghRequest(root+'/git/trees/'+co.tree.sha+'?recursive=1');if(tr.truncated)throw new Error('Remote repository tree is too large to pull safely.');const items=(tr.tree||[]).filter(x=>x.type==='blob'&&isText(x.path));let pulled={};for(const x of items){const b=await ghRequest(root+'/git/blobs/'+x.sha);const raw=atob((b.content||'').replace(/\n/g,''));const bytes=Uint8Array.from(raw,c=>c.charCodeAt(0));pulled[x.path]=new TextDecoder().decode(bytes)}if(!Object.keys(pulled).length)throw new Error('No supported text files found in this repository.');if(active&&ta.value!==files[active])files[active]=ta.value;files=pulled;dirs=new Set();Object.keys(files).forEach(mkParents);open=open.filter(x=>files[x]!==undefined);if(!open.length)open=[Object.keys(files)[0]];active=open[0]||'';base={...files};unsaved.clear();store();render();scm();refreshSide();toast('Pulled '+Object.keys(files).length+' files from GitHub')}catch(e){toast('Pull failed: '+e.message,'err')}finally{ghBusy=false}}
+// ---------------- Python debugger: async AST checkpoints ----------------
+const DBG_INIT=`import ast, sys
+def __mh_snapshot__(d):
+    return [(str(k), type(v).__name__, repr(v)[:180]) for k,v in d.items() if not str(k).startswith('__')]
+def __mh_stack__(filename):
+    import inspect
+    return [(f.function, f.lineno) for f in inspect.stack() if f.filename == filename]
+class _MhDebugInstrument(ast.NodeTransformer):
+    def _body(self, body):
+        out=[]
+        for node in body:
+            node=self.visit(node)
+            if isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef,ast.ClassDef)):
+                out.append(node); continue
+            ln=getattr(node,'lineno',1)
+            snap=ast.Call(func=ast.Name(id='__mh_snapshot__',ctx=ast.Load()),args=[ast.Call(func=ast.Name(id='locals',ctx=ast.Load()),args=[],keywords=[])],keywords=[])
+            stack=ast.Call(func=ast.Name(id='__mh_stack__',ctx=ast.Load()),args=[ast.Name(id='__file__',ctx=ast.Load())],keywords=[])
+            tick=ast.Expr(value=ast.Await(value=ast.Call(func=ast.Name(id='__mh_tick__',ctx=ast.Load()),args=[ast.Constant(ln),snap,stack],keywords=[])))
+            tick.lineno=ln;tick.col_offset=getattr(node,'col_offset',0);tick.end_lineno=ln;tick.end_col_offset=tick.col_offset
+            out.extend([tick,node])
+        return out
+    def visit_Module(self,n): n.body=self._body(n.body); return n
+    def visit_AsyncFunctionDef(self,n): n.body=self._body(n.body); return n
+    def visit_If(self,n): n.test=self.visit(n.test);n.body=self._body(n.body);n.orelse=self._body(n.orelse);return n
+    def visit_For(self,n): n.target=self.visit(n.target);n.iter=self.visit(n.iter);n.body=self._body(n.body);n.orelse=self._body(n.orelse);return n
+    visit_AsyncFor=visit_For
+    def visit_While(self,n): n.test=self.visit(n.test);n.body=self._body(n.body);n.orelse=self._body(n.orelse);return n
+    def visit_Try(self,n): n.body=self._body(n.body);n.orelse=self._body(n.orelse);n.finalbody=self._body(n.finalbody);n.handlers=[self.visit(x) for x in n.handlers];return n
+    def visit_ExceptHandler(self,n): n.body=self._body(n.body);return n
+    def visit_With(self,n): n.body=self._body(n.body);return n
+    visit_AsyncWith=visit_With
+    def visit_Match(self,n):
+        n.subject=self.visit(n.subject)
+        for case in n.cases: case.body=self._body(case.body)
+        return n
+async def _mh_debug_exec(src, filename, glob):
+    tree=ast.parse(src,filename)
+    tree=_MhDebugInstrument().visit(tree)
+    ast.fix_missing_locations(tree)
+    code=compile(tree,filename,'exec',flags=ast.PyCF_ALLOW_TOP_LEVEL_AWAIT)
+    result=eval(code,glob)
+    if result is not None: await result
+`;
+function dbgSnapshot(arr,stack){try{const a=arr&&arr.toJs?arr.toJs():arr;dbg.locals=Array.from(a||[]).map(x=>Array.from(x));}catch(e){dbg.locals=[]}try{const a=stack&&stack.toJs?stack.toJs():stack;dbg.stack=Array.from(a||[]).map(x=>Array.from(x));}catch(e){dbg.stack=[]}}
+function dbgRender(){const st=$('#dbgstate'),v=$('#dbgvars'),cs=$('#dbgstack');if(cs)cs.innerHTML=dbg.stack&&dbg.stack.length?dbg.stack.slice().reverse().map(x=>'<div class="sr">'+esc(x[0])+' <span class="mu">line '+esc(x[1])+'</span></div>').join(''):'<div class="mu">No stack frame.</div>';if(st)st.textContent=dbg.active?(dbg.paused?'Paused at '+(active||'file')+':'+dbg.line:'Running debugger…'):'Debugger idle';if(v){v.innerHTML=dbg.locals.length?'<div class="sec">VARIABLES AT LINE '+dbg.line+'</div>'+dbg.locals.map(x=>'<div class="sr"><b>'+esc(x[0])+'</b><div class="mu">'+esc(x[1])+' · '+esc(x[2])+'</div></div>').join(''):'<div class="mu">No paused frame.</div>'}}
+function dbgPause(line,locals,stack){dbg.line=line;dbgSnapshot(locals,stack);dbg.paused=true;dbgRender();selAt(line,0,0);showPanel('db');return new Promise(resolve=>{dbg.resolve=resolve})}
+async function dbgTick(line,locals,stack){if(dbg.stop)throw new Error('Debugger stopped by user');const shouldStop=dbg.steps>0||bpHas(line);if(shouldStop){dbg.steps=0;await dbgPause(line,locals,stack)}else{dbg.line=line;dbgSnapshot(locals,stack)}}
+function debugStop(){dbg.stop=true;if(dbg.resolve){const r=dbg.resolve;dbg.resolve=null;dbg.paused=false;r()}dbg.active=false;dbgRender();toast('Debugger stop requested')}
+function debugClearRuntime(){dbg.active=false;dbg.paused=false;dbg.stop=false;dbg.resolve=null;dbg.locals=[];dbg.stack=[];dbgRender()}
+async function debugAction(action){if(!dbg.active||!dbg.paused||!dbg.resolve)return;if(action==='stop'){debugStop();return}if(action==='step')dbg.steps=1;else dbg.steps=0;dbg.paused=false;const r=dbg.resolve;dbg.resolve=null;dbgRender();r()}
+async function debugStart(){if(busy)return toast('Python is already running.','err');if(!active||!/\.py$/i.test(active))return toast('Open a Python file first.','err');if(eng!=='py'||!py)return toast('Debugger requires the full Pyodide Python engine.','err');if(dbg.active)return toast('Debugger already running');files[active]=ta.value;store();busy=true;$('#rb').textContent='🐞';dbg={...dbg,active:true,paused:false,stop:false,steps:1,line:0,locals:[],stack:[],resolve:null};const waitFn=(line,locals,stack)=>dbgTick(line,locals,stack);py.globals.set('__mh_tick__',waitFn);try{await py.runPythonAsync(DBG_INIT);const g=py.globals.get('dict')();g.set('__mh_tick__',waitFn);g.set('__mh_snapshot__',py.globals.get('__mh_snapshot__'));g.set('__mh_stack__',py.globals.get('__mh_stack__'));g.set('__name__','__main__');g.set('__file__','/home/pyodide/'+active);w('🐞 Debugging '+active+'\n','sys');showPanel('db');g.set('__mh_source',ta.value);g.set('__mh_filename',active);await py.runPythonAsync('await _mh_debug_exec(__mh_source, __mh_filename, globals())',{globals:g});w('Debugger finished.\n','sys')}catch(e){w(clean(e.message||String(e))+'\n','err')}finally{debugClearRuntime();busy=false;$('#rb').textContent='▷'}}
+$('#db').addEventListener('click',e=>{const b=e.target.closest('[data-dbg]');if(b)debugAction(b.dataset.dbg)});
+function viewExt(){const ld=py?Object.keys(py.loadedPackages||{}):[],rec=['numpy','pandas','matplotlib','scipy','scikit-learn','sympy','pillow','networkx','statsmodels','beautifulsoup4'];
+ $('#sb').innerHTML='<div class="sbx"><input id="xi" placeholder="Package name (numpy, requests…)"><div class="bt" data-a="inst">Install Package</div></div><div class="sec"><span>INSTALLED ('+ld.length+')</span></div>'+(ld.length?ld.map(n=>'<div class="f"><span>✓</span><span class="nm">'+esc(n)+'</span></div>').join(''):'<div class="mu pad">Kono package load hoy ni</div>')+'<div class="sec"><span>RECOMMENDED</span></div>'+rec.map(n=>'<div class="f" data-a="instp" data-n="'+n+'"><span>⧉</span><span class="nm">'+n+'</span><span class="mu">Install</span></div>').join('')}
+async function installPkg(n){if(!n)return;if(eng!=='py')return toast('Full Python lagbe','err');showPanel('term');w('pip install '+n+'\n','pr');await pipi(n.split(/\s+/));if(vw==='xt')viewExt()}
+const PRACTICE=[
+ {id:'square',title:'1. Square Function',level:'Beginner',desc:'Write a function square(n) that returns the square of a number.',starter:'# Write your square(n) function below\n',tests:'assert square(5) == 25\nassert square(-3) == 9\nassert square(0) == 0\nTrue'},
+ {id:'even',title:'2. Even or Odd',level:'Beginner',desc:'Create is_even(n). Return True for even numbers and False otherwise.',starter:'# Write is_even(n) below\n',tests:'assert is_even(8) is True\nassert is_even(7) is False\nassert is_even(0) is True\nTrue'},
+ {id:'largest',title:'3. Largest Number',level:'Beginner+',desc:'Create largest(a, b, c) that returns the greatest of three numbers.',starter:'# Write largest(a, b, c) below\n',tests:'assert largest(3, 9, 1) == 9\nassert largest(-4, -2, -8) == -2\nassert largest(5, 5, 1) == 5\nTrue'},
+ {id:'count',title:'4. Vowel Counter',level:'Intermediate',desc:'Create count_vowels(text) that returns the number of a/e/i/o/u characters, case-insensitive.',starter:'# Write count_vowels(text) below\n',tests:'assert count_vowels("Hello") == 2\nassert count_vowels("PYTHON") == 1\nassert count_vowels("sky") == 0\nTrue'},
+ {id:'freq',title:'5. Word Frequency',level:'Intermediate',desc:'Create word_frequency(text) returning a dictionary of lowercase word counts. Ignore punctuation.',starter:'import re\n# Write word_frequency(text) below\n',tests:'r = word_frequency("Cat, dog cat!")\nassert r["cat"] == 2 and r["dog"] == 1\nassert sum(r.values()) == 3\nTrue'}
+];
+let practiceDone=(()=>{try{return JSON.parse(localStorage.getItem('mh_practice')||'{}')}catch(e){return {}}})();
+function viewLab(){
+ const total=PRACTICE.length,done=PRACTICE.filter(x=>practiceDone[x.id]).length;
+ $('#sb').innerHTML='<div class="metric"><span>Completed: <b>'+done+'/'+total+'</b></span><span>Progress: <b>'+Math.round(done/total*100)+'%</b></span></div><div class="mu pad">Choose a challenge, write your solution in the editor, then run the tests. Requires the full Python engine.</div>'+PRACTICE.map(x=>'<div class="labcard"><h4>'+esc(x.title)+' '+(practiceDone[x.id]?'✓':'')+'</h4><div class="mu">'+x.level+'</div><p>'+esc(x.desc)+'</p><div class="bt g" data-a="loadpractice" data-id="'+x.id+'">Load starter in editor</div><div class="bt" data-a="checkpractice" data-id="'+x.id+'">✓ Check solution</div></div>').join('');
+}
+function viewData(){
+ let html='<div class="sbx"><div class="mu">Inspect the last Python run or preview a CSV/TSV file.</div><div class="bt" data-a="vars">↻ Refresh variables</div><div class="bt g" data-a="csv">Open active CSV preview</div></div><div id="varlist"><div class="mu pad">Run a Python file to inspect variables.</div></div>';
+ $('#sb').innerHTML=html;showVariables();
+}
+function showVariables(){const box=$('#varlist');if(!box)return;if(!lastGlobals||!py){box.innerHTML='<div class="mu pad">No completed Python run yet.</div>';return}
+ try{const rows=py.runPython("[(k, type(v).__name__, repr(v)[:140]) for k,v in globals().items() if not k.startswith('__') and k not in ('In','Out')]",{globals:lastGlobals}).toJs();box.innerHTML=rows.length?'<div class="sec"><span>VARIABLES</span><span>'+rows.length+'</span></div>'+rows.map(r=>'<div class="sr"><b>'+esc(r[0])+'</b><div class="mu">'+esc(r[1])+' · '+esc(r[2])+'</div></div>').join(''):'<div class="mu pad">No user variables found.</div>'}catch(e){box.innerHTML='<div class="mu pad">Variable inspection unavailable for this run.</div>'}
+}
+function loadPractice(id){const q=PRACTICE.find(x=>x.id===id);if(!q)return;const name='practice_'+id+'.py';files[name]=q.starter;mkParents(name);openF(name);store();toast('Starter loaded. Complete the function, then check it.')}
+async function checkPractice(id){const q=PRACTICE.find(x=>x.id===id);if(!q)return;if(eng!=='py'||!py)return toast('Practice checking needs the full Python engine.','err');if(!active||!/\.py$/i.test(active))return toast('Open a Python file with your solution first.','err');
+ try{const g=py.globals.get('dict')();g.set('__name__','__practice__');await py.runPythonAsync(ta.value,{globals:g});const ok=await py.runPythonAsync(q.tests,{globals:g});if(ok===true||String(ok)==='True'){practiceDone[id]=true;localStorage.setItem('mh_practice',JSON.stringify(practiceDone));toast('All tests passed: '+q.title);if(vw==='lab')viewLab()}else toast('Tests did not pass yet.','err')}
+ catch(e){toast('Test failed: '+String(e.message||e).split('\n')[0],'err')}
+}
+function csvPreview(){const p=active;if(!p||! /\.(csv|tsv)$/i.test(p))return toast('Open a .csv or .tsv file first.','err');const delim=/\.tsv$/i.test(p)?'\t':',';const rows=files[p].split(/\r?\n/).filter(x=>x.length).slice(0,101).map(line=>line.split(delim));const cols=Math.max(0,...rows.map(r=>r.length));let h='<div class="data-wrap"><table class="data-table"><tbody>';rows.forEach((r,i)=>{h+='<tr>'+Array.from({length:cols},(_,j)=>'<'+(i===0?'th':'td')+'>'+esc(r[j]||'')+'</'+(i===0?'th':'td')+'>').join('')+'</tr>'});h+='</tbody></table></div>';$('#dvc').innerHTML=h;$('#dvt').textContent='CSV Preview — '+p+' (first '+Math.max(0,rows.length-1)+' data rows)';$('#dv').style.display='flex';}
+function view(v,force){const s=$('#side');if(vw===v&&!force)s.classList.toggle('hide');else{s.classList.remove('hide');vw=v}
+ $$('#act [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===vw&&!s.classList.contains('hide')));
+ $('#sh').textContent={ex:'EXPLORER',se:'SEARCH',sc:'SOURCE CONTROL',ru:'RUN AND DEBUG',xt:'PYTHON PACKAGES',lab:'PYTHON PRACTICE',data:'DATA EXPLORER'}[vw]||'MhCoder';if(!s.classList.contains('hide'))drawSide(true)}
+function refreshSide(){drawSide(false)}
+function drawSide(fresh){if($('#side').classList.contains('hide'))return;if(vw==='ex')viewEx();else if(vw==='sc')viewScm();else if(vw==='ru')viewRun();else if(vw==='xt')viewExt();else if(vw==='se'&&(fresh||!$('#si')))viewSearch();else if(vw==='lab')viewLab();else if(vw==='data')viewData()}
+const ACT={nf:()=>newFile(),nd:()=>newFolder(),rf:()=>{pullF();render();toast('Explorer refreshed')},ca:()=>{Object.keys(files).forEach(p=>{const q=p.split('/');for(let i=1;i<q.length;i++)collapsed.add(q.slice(0,i).join('/'))});dirs.forEach(d=>collapsed.add(d));refreshSide()},
+ commit:()=>doCommit(),disc:b=>discard(b.dataset.n),ghconnect:()=>ghConnect(),ghpush:()=>ghPush(),ghpull:()=>ghPull(),debugstart:()=>debugStart(),debugstop:()=>debugStop(),debugclear:()=>{bpLines().forEach(n=>breakpoints.delete(bpKey(n)));refreshSide();paint();toast('Breakpoints cleared for this file')},repall:()=>replAll(),runf:()=>run(),runs:()=>runSel(),rst:()=>location.reload(),inst:()=>installPkg(($('#xi')||{}).value.trim()),instp:b=>installPkg(b.dataset.n),loadpractice:b=>loadPractice(b.dataset.id),checkpractice:b=>checkPractice(b.dataset.id),vars:()=>showVariables(),csv:()=>csvPreview()};
+$('#sb').addEventListener('click',e=>{const t=e.target;
+ const b=t.closest('[data-a]');if(b){e.stopPropagation();ACT[b.dataset.a]&&ACT[b.dataset.a](b);return}
+ const tg=t.closest('[data-t]');if(tg){SO[tg.dataset.t]^=1;tg.classList.toggle('on');doSearch();return}
+ const sec=t.closest('[data-s]');if(sec){const k='s:'+sec.dataset.s;collapsed.has(k)?collapsed.delete(k):collapsed.add(k);refreshSide();return}
+ const dots=t.closest('.dots');if(dots){const r=dots.getBoundingClientRect();return fileMenu(dots.dataset.n,r.left,r.bottom)}
+ const d=t.closest('[data-d]');if(d){const k=d.dataset.d;collapsed.has(k)?collapsed.delete(k):collapsed.add(k);refreshSide();return}
+ const ol=t.closest('[data-ol]');if(ol){goLine(+ol.dataset.ol);return}
+ const sr=t.closest('.sr[data-n]');if(sr){openF(sr.dataset.n);selAt(+sr.dataset.l,+sr.dataset.c,+sr.dataset.len);return}
+ const df=t.closest('[data-df]');if(df){showDiff(df.dataset.df);return}const bp=t.closest('[data-bpjump]');if(bp){selAt(+bp.dataset.bpjump,0,0);return}
+ const f=t.closest('.f[data-n]');if(f)openF(f.dataset.n)});
+$('#sb').addEventListener('input',e=>{if(e.target.id==='si')doSearch()});
+$('#sb').addEventListener('keydown',e=>{if(e.target.id==='cm'&&e.key==='Enter')doCommit()});
+$('#sb').addEventListener('contextmenu',e=>{const f=e.target.closest('.f[data-n]'),d=e.target.closest('[data-d]');if(f){e.preventDefault();fileMenu(f.dataset.n,e.clientX,e.clientY)}else if(d){e.preventDefault();dirMenu(d.dataset.d,e.clientX,e.clientY)}});
+$('#act').onclick=e=>{const b=e.target.closest('[data-v]');if(b)view(b.dataset.v);if(e.target.id==='gear')ctx([['Command Palette…',()=>pal('>')],['Settings',openSettings],['Keyboard Shortcuts',()=>pal('>')],['Color Theme: Dark+',()=>setTheme('dark')],['Color Theme: Light+',()=>setTheme('light')],['Toggle Zen Mode',zen]],e.clientX+10,e.clientY-120);if(e.target.id==='acct')window.mhLogout?.()};
+function tabsR(){$('#tabs').innerHTML=open.map(n=>'<div class="t'+(n===active?' on':'')+'" data-n="'+esc(n)+'" title="'+esc(n)+'">'+ico(n)+' '+esc(n.split('/').pop())+(unsaved.has(n)?' <b>●</b>':'')+' <i data-c="'+esc(n)+'">✕</i></div>').join('');const t=$('#tabs .on');if(t&&t.scrollIntoView)t.scrollIntoView({inline:'nearest',block:'nearest'})}
+function render(){tabsR();drawWelcomeRecent();$('#edcol').classList.toggle('noed',!active);document.title=(active||'MhCoder')+' - MhCoder | MH Sompod';$('#cc').textContent=active?active.split('/').pop()+' — '+wsName:wsName;
+ ta.value=active?files[active]:'';diag=[];paint();lint();refreshSide();scm();crumb()}
+$('#tabs').onclick=e=>{const c=e.target.dataset.c;if(c)return closeTab(c);const t=e.target.closest('.t');if(t){active=t.dataset.n;store();render()}};
+$('#tabs').addEventListener('auxclick',e=>{const t=e.target.closest('.t');if(t&&e.button===1)closeTab(t.dataset.n)});
+$('#tabs').addEventListener('contextmenu',e=>{const t=e.target.closest('.t');if(t){e.preventDefault();tabMenu(t.dataset.n,e.clientX,e.clientY)}});
+function openF(n){if(!(n in files))return;if(n!==active)navPush();active=n;if(!open.includes(n))open.push(n);recent=[n,...recent.filter(x=>x!==n)].slice(0,20);store();render();ta.focus()}
+function closeTab(n){n=n||active;if(!n)return;const i=open.indexOf(n);if(i<0)return;closed.push(n);open.splice(i,1);unsaved.delete(n);if(active===n)active=open[Math.min(i,open.length-1)]||'';store();render()}
+function closeMany(f){open.filter(f).forEach(n=>{closed.push(n);unsaved.delete(n)});open=open.filter(n=>!f(n));if(!open.includes(active))active=open[0]||'';store();render()}
+function rep(a,b,t){ta.focus();ta.setSelectionRange(a,b);const ok=t===''?document.execCommand('delete'):document.execCommand('insertText',false,t);if(!ok){ta.setRangeText(t,a,b,'end');ta.dispatchEvent(new Event('input'))}}
+function lr(){const v=ta.value,s=ta.selectionStart,e=ta.selectionEnd,ls=v.lastIndexOf('\n',s-1)+1,e2=(e>s&&v[e-1]==='\n')?e-1:e;let le=v.indexOf('\n',e2);if(le<0)le=v.length;return[ls,le,s,e]}
+function mapL(f){const[ls,le,s,e]=lr(),L=ta.value.slice(ls,le).split('\n').map(f),t=L.join('\n');rep(ls,le,t);if(L.length===1){const d=t.length-(le-ls);ta.setSelectionRange(Math.max(ls,s+d),Math.max(ls,e+d))}else ta.setSelectionRange(ls,ls+t.length)}
+const ind=l=>l.match(/^\s*/)[0],TAB=()=>' '.repeat(S.tab);
+function reveal(p){const t=lineOf(p)*LH();if(t<ta.scrollTop||t>ta.scrollTop+ta.clientHeight-2*LH())ta.scrollTop=Math.max(0,t-ta.clientHeight/3);sync()}
+function selAt(ln,col,len){const L=ta.value.split('\n');ln=Math.min(Math.max(1,ln||1),L.length);let p=0;for(let i=0;i<ln-1;i++)p+=L[i].length+1;p+=col||0;ta.focus();ta.setSelectionRange(p,p+(len||0));reveal(p);pos()}
+function goLine(n,col){navPush();selAt(n,col||0,0)}
+function navPush(){if(active){NB.push([active,ta.selectionStart]);if(NB.length>60)NB.shift();NF.length=0}}
+function jumpTo(x){if(x[0]!==active)openF(x[0]);ta.focus();ta.setSelectionRange(x[1],x[1]);reveal(x[1]);pos()}
+function navBack(){const x=NB.pop();if(!x)return toast('No more history');NF.push([active,ta.selectionStart]);jumpTo(x)}
+function navFwd(){const x=NF.pop();if(!x)return;NB.push([active,ta.selectionStart]);jumpTo(x)}
+const C={
+ comment(){const[ls,le]=lr(),L=ta.value.slice(ls,le).split('\n'),all=L.filter(x=>x.trim()).every(x=>/^\s*#/.test(x));mapL(x=>!x.trim()?x:all?x.replace(/^(\s*)# ?/,'$1'):x.replace(/^(\s*)/,'$1# '))},
+ addC(){mapL(x=>!x.trim()?x:x.replace(/^(\s*)/,'$1# '))},remC(){mapL(x=>x.replace(/^(\s*)# ?/,'$1'))},
+ block(){const s=ta.selectionStart,e=ta.selectionEnd;if(s===e)return;const t=ta.value.slice(s,e);rep(s,e,'"""\n'+t+'\n"""')},
+ indent(){mapL(x=>TAB()+x)},outdent(){mapL(x=>x.replace(new RegExp('^ {1,'+S.tab+'}|^\\t'),''))},
+ dupDown(){const[ls,le,s,e]=lr(),t=ta.value.slice(ls,le);rep(le,le,'\n'+t);ta.setSelectionRange(s+t.length+1,e+t.length+1)},
+ dupUp(){const[ls,le,s,e]=lr(),t=ta.value.slice(ls,le);rep(ls,ls,t+'\n');ta.setSelectionRange(s,e)},
+ moveUp(){const[ls,le,s,e]=lr(),v=ta.value;if(!ls)return;const ps=v.lastIndexOf('\n',ls-2)+1,pv=v.slice(ps,ls-1);rep(ps,le,v.slice(ls,le)+'\n'+pv);ta.setSelectionRange(s-(ls-ps),e-(ls-ps))},
+ moveDown(){const[ls,le,s,e]=lr(),v=ta.value;if(le>=v.length)return;let ne=v.indexOf('\n',le+1);if(ne<0)ne=v.length;const nx=v.slice(le+1,ne);rep(ls,ne,nx+'\n'+v.slice(ls,le));ta.setSelectionRange(s+nx.length+1,e+nx.length+1)},
+ delLine(){const[ls,le]=lr(),v=ta.value;if(le<v.length)rep(ls,le+1,'');else rep(Math.max(0,ls-1),le,'')},
+ delEnd(){const s=ta.selectionStart,v=ta.value;let le=v.indexOf('\n',s);if(le<0)le=v.length;if(le===s&&le<v.length)le++;rep(s,le,'')},
+ delStart(){const s=ta.selectionStart,ls=ta.value.lastIndexOf('\n',s-1)+1;rep(ls,s,'')},
+ below(){const[ls,le]=lr(),i=ind(ta.value.slice(ls,le));rep(le,le,'\n'+i)},
+ above(){const[ls,le]=lr(),i=ind(ta.value.slice(ls,le));rep(ls,ls,i+'\n');ta.setSelectionRange(ls+i.length,ls+i.length)},
+ selLine(){const[ls,le]=lr();ta.setSelectionRange(ls,Math.min(le+1,ta.value.length))},
+ nextOcc(){const v=ta.value;let s=ta.selectionStart,e=ta.selectionEnd;if(s===e){const m=/\w*$/.exec(v.slice(0,s))[0],n=/^\w*/.exec(v.slice(s))[0];s-=m.length;e+=n.length;ta.setSelectionRange(s,e);return}
+  const q=v.slice(s,e);let p=v.indexOf(q,e);if(p<0)p=v.indexOf(q);ta.setSelectionRange(p,p+q.length);reveal(p)},
+ expand(){const v=ta.value,s=ta.selectionStart,e=ta.selectionEnd;selStack.push([s,e]);const a=/\w*$/.exec(v.slice(0,s))[0].length,b=/^\w*/.exec(v.slice(e))[0].length;
+  if(a+b>0&&(s-a<s||e+b>e)&&!(a===0&&b===0)){ta.setSelectionRange(s-a,e+b);if(s-a<s||e+b>e)return}
+  const[ls,le]=lr(),t=ta.value.slice(ls,le),i=ind(t).length;if(s>ls+i||e<le){ta.setSelectionRange(ls+i,le);return}if(s>ls||e<le){ta.setSelectionRange(ls,le);return}ta.setSelectionRange(0,v.length)},
+ shrink(){const x=selStack.pop();if(x)ta.setSelectionRange(x[0],x[1]);else ta.setSelectionRange(ta.selectionStart,ta.selectionStart)}
+};
+function tr(f){const s=ta.selectionStart,e=ta.selectionEnd;if(s===e)rep(0,ta.value.length,f(ta.value));else{const t=f(ta.value.slice(s,e));rep(s,e,t);ta.setSelectionRange(s,s+t.length)}}
+function linesOp(f){const v=ta.value;let a=0,b=v.length;if(ta.selectionStart!==ta.selectionEnd){const r=lr();a=r[0];b=r[1]}const t=f(v.slice(a,b).split('\n')).join('\n');rep(a,b,t);ta.setSelectionRange(a,a+t.length)}
+const title=s=>s.replace(/\w\S*/g,w=>w[0].toUpperCase()+w.slice(1).toLowerCase());
+function prep(){if(S.trim)ta.value!==ta.value.replace(/[ \t]+$/gm,'')&&rep(0,ta.value.length,ta.value.replace(/[ \t]+$/gm,''));if(S.fnl&&ta.value&&!ta.value.endsWith('\n'))rep(ta.value.length,ta.value.length,'\n')}
+async function saveAll(){if(active)files[active]=ta.value;store();let ok=true;for(const p of Object.keys(files)){if(handle||fileH[p])ok=(await saveReal(p))&&ok}unsaved.clear();tabsR();toast(ok?'Saved all files':'Some files could not be saved',ok?'':'err')}
+async function save(){if(!active)return;if(S.fmt&&/\.py$/.test(active))await fmtDoc(true);prep();files[active]=ta.value;store();unsaved.delete(active);tabsR();if(handle||fileH[active]){const ok=await saveReal(active);if(ok)toast('Saved '+active+' to disk')}else toast('Saved '+active);if(S.runsave&&/\.py$/.test(active))run()}
+const conv=t=>S.eol==='CRLF'?t.replace(/\r?\n/g,'\r\n'):t;
+async function saveReal(p){if(handle)return await wb(p);if(fileH[p]){try{const w=await fileH[p].createWritable();await w.write(conv(files[p]));await w.close();return true}catch(e){toast('Save failed: '+e.message,'err');return false}}return false}
+async function wb(p){if(!handle)return false;try{const q=p.split('/');let d=handle;for(const x of q.slice(0,-1))d=await d.getDirectoryHandle(x,{create:true});const fh=await d.getFileHandle(q[q.length-1],{create:true}),w=await fh.createWritable();await w.write(conv(files[p]));await w.close();return true}catch(e){toast('Disk write failed: '+e.message,'err');return false}}
+async function rmDisk(p){if(!handle)return;try{const q=p.split('/');let d=handle;for(const x of q.slice(0,-1))d=await d.getDirectoryHandle(x);await d.removeEntry(q[q.length-1],{recursive:true})}catch(e){}}
+async function deliver(blob,name,mime){if(window.showSaveFilePicker){try{const h=await showSaveFilePicker({suggestedName:name});const w=await h.createWritable();await w.write(blob);await w.close();toast('Saved to '+h.name);return h}catch(e){if(e.name==='AbortError')return}}
+ const f=new File([blob],name,{type:mime||'text/plain'});if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e.name==='AbortError')return}}
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.append(a);a.click();a.remove();toast('Downloaded '+name+' (Files > Downloads)')}
+async function toDevice(p){p=p||active;if(!p)return;const h=await deliver(new Blob([conv(files[p])],{type:'text/plain'}),p.split('/').pop());if(h&&h.createWritable)fileH[p]=h}
+function download(p){p=p||active;if(!p)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([conv(files[p])],{type:'text/plain'}));a.download=p.split('/').pop();document.body.append(a);a.click();a.remove();toast('Downloaded '+p.split('/').pop())}
+async function zipLib(){if(!window.JSZip)await loadS('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',20000)}
+async function exportZip(){try{await zipLib();const z=new JSZip();for(const p in files)z.file(p,conv(files[p]));await deliver(await z.generateAsync({type:'blob'}),wsName+'.zip','application/zip')}catch(e){toast('ZIP banano gelo na (internet check koro)','err')}}
+
+const uniq=n=>{if(!(n in files))return n;let i=1;const m=/^(.*?)(\.\w+)?$/.exec(n);while((m[1]+'_'+i+(m[2]||'')) in files)i++;return m[1]+'_'+i+(m[2]||'')};
+async function importFiles(list,rel){let c=0;for(const f of list){const p=rel&&f.webkitRelativePath?f.webkitRelativePath.split('/').slice(1).join('/')||f.name:f.name;if(/\.zip$/i.test(f.name)){await importZip(f);continue}if(!isText(f.name)||f.size>2e6)continue;const n=rel?p:uniq(p);files[n]=await f.text();mkParents(n);c++;if(c===1&&!rel)openF(n)}store();render();toast('Imported '+c+' file(s)')}
+async function importZip(f){try{await zipLib();const z=await JSZip.loadAsync(f);let c=0;for(const p in z.files){const e=z.files[p];if(e.dir||!isText(p)||p.startsWith('__MACOSX')||p.split('/').some(x=>x[0]==='.'))continue;files[p]=await e.async('string');mkParents(p);c++}store();render();toast('Imported '+c+' files from ZIP')}catch(e){toast('ZIP read failed','err')}}
+async function openFile(){if(window.showOpenFilePicker){try{const hs=await showOpenFilePicker({multiple:true,types:[{description:'Workspace text files',accept:{'text/plain':['.py','.pyw','.txt','.md','.csv','.tsv','.json','.html','.css','.js','.xml','.yaml','.yml','.toml','.sql']}}]});for(const h of hs){const f=await h.getFile(),n=uniq(f.name);files[n]=await f.text();fileH[n]=h;openF(n)}return}catch(e){if(e.name==='AbortError')return}}$('#fin').click()}
+$('#fin').onchange=e=>{importFiles([...e.target.files]);e.target.value=''};
+$('#fdir').onchange=e=>{importFiles([...e.target.files],true);e.target.value=''};
+$('#fzip').onchange=e=>{[...e.target.files].forEach(importZip);e.target.value=''};
+async function readDir(h,pre){for await(const [n,e] of h.entries()){if(n[0]==='.'||n==='__pycache__'||n==='node_modules')continue;if(e.kind==='directory'){dirs.add(pre+n);await readDir(e,pre+n+'/')}else if(isText(n)){const f=await e.getFile();if(f.size<1e6)files[pre+n]=await f.text()}}}
+async function openFolder(){if(window.showDirectoryPicker){try{const h=await showDirectoryPicker({mode:'readwrite'});if(!await confirmBox('Open folder “'+h.name+'”?','Current workspace replace hobe. Folder-er file e edit korle sorasori disk e save hobe.','Open'))return;files={};dirs=new Set();open=[];active='';handle=h;wsName=h.name;await readDir(h,'');base={...files};const k=Object.keys(files).filter(x=>/\.py$/.test(x))[0]||Object.keys(files)[0];if(k){open=[k];active=k}store();render();toast('Opened folder '+h.name)}catch(e){if(e.name!=='AbortError')toast(e.message,'err')}}
+ else{toast('Ei browser e live folder access nai. Files/ZIP import use koro, ba Chrome/Edge (desktop) e khulo.');$('#fdir').click()}}
+function pullF(){if(eng!=='py')return;const R='/home/pyodide';let ch=false;(function walk(d,rel){let es;try{es=py.FS.readdir(d)}catch(e){return}for(const n of es){if(n==='.'||n==='..'||n[0]==='.'||n==='__pycache__')continue;const p=d+'/'+n,r=rel?rel+'/'+n:n;let st;try{st=py.FS.stat(p)}catch(e){continue}
+  if(py.FS.isDir(st.mode)){if(!dirs.has(r)){dirs.add(r);ch=true}walk(p,r)}else if(isText(n)){try{const t=py.FS.readFile(p,{encoding:'utf8'});if(files[r]!==t){files[r]=t;ch=true}}catch(e){}}}})(R,'');if(ch){store();render()}}
+function syncF(){if(eng!=='py')return;const R='/home/pyodide/';dirs.forEach(d=>{try{py.FS.mkdirTree(R+d)}catch(e){}});for(const n in files){try{const i=n.lastIndexOf('/');if(i>0)py.FS.mkdirTree(R+n.slice(0,i));py.FS.writeFile(R+n,files[n])}catch(e){}}}
+function fsRm(p){if(eng!=='py')return;try{const st=py.FS.stat('/home/pyodide/'+p);if(py.FS.isDir(st.mode))py.FS.rmdir('/home/pyodide/'+p);else py.FS.unlink('/home/pyodide/'+p)}catch(e){}}
+const nm=v=>v.toLowerCase().endsWith('.py')?v:v.replace(/\.[^.]*$/,'')+'.py';
+const norm=v=>v.replace(/\\/g,'/').split('/').filter(Boolean).join('/');
+const bad=(v,sl)=>!v?'A file or folder name must be provided.':('<>:"|?*\\'+(sl?'':'/')).split('').some(c=>v.includes(c))?'The name contains invalid characters.':'';
+function mkParents(n){const p=n.split('/');for(let i=1;i<p.length;i++)dirs.add(p.slice(0,i).join('/'))}
+function ask(t,val,validate){return new Promise(res=>{const q=$('#qi'),i=$('#qin'),e=$('#qe');$('#qt').textContent=t;q.style.display='block';i.value=val||'';e.textContent='';i.focus();i.select();const done=v=>{q.style.display='none';i.onkeydown=i.oninput=i.onblur=null;ta.focus();res(v)};i.oninput=()=>{e.textContent=validate?validate(i.value.trim())||'':''};i.onkeydown=ev=>{if(ev.key==='Enter'){ev.preventDefault();const v=i.value.trim(),er=validate?validate(v):'';if(er)e.textContent=er;else done(v)}else if(ev.key==='Escape')done(null)};i.onblur=()=>setTimeout(()=>{if(q.style.display==='block')done(null)},250)})}
+function confirmBox(m1,m2,ok,nc){return new Promise(res=>{const m=$('#md');$('#mm1').textContent=m1;$('#mm2').textContent=m2||'';$('#mok').textContent=ok||'OK';$('#mcn').style.display=nc?'none':'';m.style.display='flex';$('#mok').focus();const done=v=>{m.style.display='none';m.onkeydown=null;ta.focus();res(v)};$('#mok').onclick=()=>done(true);$('#mcn').onclick=()=>done(false);m.onkeydown=ev=>{if(ev.key==='Escape')done(false)}})}
+function toast(msg,kind){notes.unshift([msg,Date.now(),kind]);const t=document.createElement('div');t.className='toast'+(kind==='err'?' err':'');t.textContent=(kind==='err'?'⊗  ':'ⓘ  ')+msg;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),3500)}
+$('#bell').onclick=()=>{const n=$('#notif');if(n.style.display==='block'){n.style.display='none';return}n.innerHTML=notes.length?'<div class="mu" id="nclr" style="cursor:pointer">Clear All</div>'+notes.slice(0,30).map(x=>'<div>'+esc(x[0])+' <span class="mu">'+new Date(x[1]).toLocaleTimeString()+'</span></div>').join(''):'<div class="mu">No new notifications</div>';n.style.display='block';const c=$('#nclr');if(c)c.onclick=()=>{notes=[];n.style.display='none'}};
+async function newFile(dir){const v=await ask('Please enter a name for the new file',(dir?dir+'/':'')+'untitled.py',x=>bad(x,1)||(files[nm(norm(x))]!==undefined?'A file named '+nm(norm(x))+' already exists.':''));if(!v)return;const n=nm(norm(v));files[n]='';mkParents(n);openF(n);if(handle)wb(n);toast('Created '+n)}
+async function newFolder(pre){const v=await ask('Folder name',pre?pre+'/':'',x=>bad(x,1)||(dirs.has(norm(x))?'A folder named '+x+' already exists.':''));if(!v)return;const d=norm(v);dirs.add(d);mkParents(d+'/x');if(handle){try{let h=handle;for(const x of d.split('/'))h=await h.getDirectoryHandle(x,{create:true})}catch(e){}}store();refreshSide();toast('Created folder '+d)}
+async function rename(n){n=n||active;if(!n)return;const v=await ask('Rename '+n,n,x=>bad(x,1)||(nm(norm(x))!==n&&files[nm(norm(x))]!==undefined?'A file named '+nm(norm(x))+' already exists.':''));if(!v)return;const k=nm(norm(v));if(k===n)return;files[k]=files[n];delete files[n];if(fileH[n]){fileH[k]=fileH[n];delete fileH[n]}mkParents(k);open=open.map(x=>x===n?k:x);if(active===n)active=k;fsRm(n);if(handle){wb(k);rmDisk(n)}store();render();toast('Renamed to '+k)}
+async function delFile(n){n=n||active;if(!n)return;if(!await confirmBox('Are you sure you want to delete “'+n+'”?','This action cannot be undone.','Delete'))return;delete files[n];fsRm(n);rmDisk(n);open=open.filter(x=>x!==n);unsaved.delete(n);if(active===n)active=open[0]||'';store();render();toast('Deleted '+n)}
+function dupFile(n){n=n||active;if(!n)return;let k=n.replace(/(\.\w+)$/,'_copy$1');while(files[k]!==undefined)k='copy_'+k;files[k]=files[n];openF(k);toast('Created '+k)}
+async function renameDir(d){const v=await ask('Rename folder '+d,d,x=>bad(x,1));if(!v)return;const k=norm(v);if(k===d)return;const mv={};for(const p in files)if(p.startsWith(d+'/')){mv[p]=k+p.slice(d.length)}for(const p in mv){files[mv[p]]=files[p];delete files[p];fsRm(p);open=open.map(x=>x===p?mv[p]:x);if(active===p)active=mv[p]}dirs=new Set([...dirs].map(x=>x===d||x.startsWith(d+'/')?k+x.slice(d.length):x));dirs.add(k);store();render();toast('Renamed folder to '+k)}
+async function delDir(d){if(!await confirmBox('Delete folder “'+d+'” and everything in it?','This action cannot be undone.','Delete'))return;for(const p of Object.keys(files))if(p.startsWith(d+'/')){delete files[p];fsRm(p);open=open.filter(x=>x!==p);if(active===p)active=''}dirs=new Set([...dirs].filter(x=>x!==d&&!x.startsWith(d+'/')));rmDisk(d);if(!open.includes(active))active=open[0]||'';store();render();toast('Deleted folder '+d)}
+function ctx(items,x,y){const c=$('#ctx');c.innerHTML=items.map((a,i)=>'<div data-i="'+i+'">'+esc(a[0])+'</div>').join('');c.style.display='block';c.style.left=Math.max(0,Math.min(x,innerWidth-200))+'px';c.style.top=Math.max(0,Math.min(y,innerHeight-items.length*30-10))+'px';c.onclick=e=>{const d=e.target.closest('[data-i]');c.style.display='none';if(d)items[+d.dataset.i][1]()}}
+document.addEventListener('click',e=>{if(!e.target.closest('#ctx,.dots,#menu,#menubar,[data-x=fk]'))$('#ctx').style.display=$('#menu').style.display='none';if(!e.target.closest('#notif,#bell'))$('#notif').style.display='none'});
+const prevable=p=>/\.(html?|md)$/i.test(p||'');
+function fileMenu(p,x,y){const it=[['Open',()=>openF(p)]];if(prevable(p))it.push(['Open Preview',()=>{openF(p);preview()}]);it.push(['Rename…  F2',()=>rename(p)],['Duplicate',()=>dupFile(p)],['Open Changes',()=>showDiff(p)],['Save to Files…',()=>toDevice(p)],['Download',()=>download(p)],['Copy Path',()=>copyTxt(p)],['Delete',()=>delFile(p)]);ctx(it,x,y)}
+function dirMenu(d,x,y){ctx([['New File Here…',()=>newFile(d)],['New Folder Here…',()=>newFolder(d)],['Rename Folder…',()=>renameDir(d)],['Delete Folder',()=>delDir(d)]],x,y)}
+function tabMenu(p,x,y){ctx([['Close',()=>closeTab(p)],['Close Others',()=>closeMany(n=>n!==p)],['Close to the Right',()=>{const i=open.indexOf(p);closeMany(n=>open.indexOf(n)>i)}],['Close All',()=>closeMany(()=>true)],['Copy Path',()=>copyTxt(p)],['Rename…',()=>rename(p)],['Save to Files…',()=>toDevice(p)]],x,y)}
+function copyTxt(t){if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>toast('Copied: '+t),()=>toast('Copy failed','err'));else toast(t)}
+function preview(){const p=active;if(p&&/\.(csv|tsv)$/i.test(p))return csvPreview();if(!p||!prevable(p))return toast('Preview: .html, .md, .csv ba .tsv file lagbe','err');$('#pvf').srcdoc=/\.md$/i.test(p)?md2h(files[p]):files[p];showPanel('pv')}
+function md2h(s){s=esc(s);s=s.replace(/```\w*\n([\s\S]*?)```/g,'<pre><code>$1</code></pre>').replace(/^### (.*)$/gm,'<h3>$1</h3>').replace(/^## (.*)$/gm,'<h2>$1</h2>').replace(/^# (.*)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\*(.+?)\*/g,'<i>$1</i>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/^[-*] (.*)$/gm,'<li>$1</li>').replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g,'<a href="$2">$1</a>').replace(/\n\n/g,'<br><br>');return'<body style="font:15px sans-serif;padding:14px;color:#222;background:#fff">'+s+'</body>'}
+function fwOpen(){return $('#fw').style.display==='flex'}
+function fre(){return sRegex($('#fi').value,FO)}
+function mAll(){const re=fre(),v=ta.value,r=[];if(!re)return r;let m;while((m=re.exec(v))&&r.length<5000){r.push([m.index,m.index+m[0].length]);if(m[0].length===0)re.lastIndex++}return r}
+function find(rp){$('#fw').style.display='flex';$('#rr').style.display=rp?'flex':'none';const s=ta.value.slice(ta.selectionStart,ta.selectionEnd);if(s&&!s.includes('\n'))$('#fi').value=s;$('#fi').focus();$('#fi').select();fnd(1,true)}
+function fnd(d,stay){const m=mAll();if(!m.length){$('#fc').textContent=$('#fi').value?'No results':'';marks();return}
+ let p=d>0?m.find(x=>x[0]>=(stay?ta.selectionStart:ta.selectionEnd)):[...m].reverse().find(x=>x[0]<ta.selectionStart);if(!p)p=d>0?m[0]:m[m.length-1];
+ $('#fc').textContent=(m.indexOf(p)+1)+' of '+m.length;ta.setSelectionRange(p[0],p[1]);reveal(p[0]);marks();pos()}
+$('#fi').oninput=()=>fnd(1,true);
+$('#fi').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();fnd(e.shiftKey?-1:1)}else if(e.altKey&&['KeyC','KeyW','KeyR'].includes(e.code)){e.preventDefault();$({KeyC:'#fcase',KeyW:'#fword',KeyR:'#freg'}[e.code]).click()}};
+[['#fcase','c'],['#fword','w'],['#freg','r']].forEach(([id,k])=>$(id).onclick=()=>{FO[k]^=1;$(id).classList.toggle('on',!!FO[k]);fnd(1,true)});
+$('#fn').onclick=()=>fnd(1);$('#fp').onclick=()=>fnd(-1);$('#fx').onclick=closeFind;
+function closeFind(){$('#fw').style.display='none';marks();ta.focus()}
+$('#r1').onclick=()=>{const re=fre();if(!re)return;const s=ta.selectionStart,e=ta.selectionEnd,t=ta.value.slice(s,e);if(mAll().some(m=>m[0]===s&&m[1]===e))rep(s,e,t.replace(re,$('#ri').value));fnd(1)};
+$('#ra').onclick=()=>{const re=fre();if(!re)return;const v=ta.value;rep(0,v.length,v.replace(re,$('#ri').value));fnd(1,true)};
+let fmtBusy=false;
+async function fmtDoc(quiet){if(eng!=='py')return toast('Format er jonno full Python lagbe','err');if(fmtBusy)return;fmtBusy=true;if(!quiet)toast('Formatting…');
+ try{await py.loadPackage('micropip');if(!fmtOK){await py.pyimport('micropip').install('autopep8');py.runPython('import autopep8\ndef _fmt(s): return autopep8.fix_code(s)');fmtOK=true}const r=py.globals.get('_fmt')(ta.value);if(r!==ta.value)rep(0,ta.value.length,r);if(!quiet)toast('Formatted')}catch(e){toast('Format failed (autopep8 install hoy ni)','err')}fmtBusy=false}
+function lint(){clearTimeout(lintT);lintT=setTimeout(doLint,500)}
+function doLint(){diag=[];if(eng==='py'&&active&&/\.py$/.test(active)){try{const r=py.globals.get('_lint')(ta.value).toJs(),L=ta.value.split('\n');
+ r.forEach(([ln,col,msg,sev])=>{let p=0;for(let i=0;i<ln-1&&i<L.length;i++)p+=L[i].length+1;const line=L[ln-1]||'';let s=p+Math.max(0,Math.min(col-1,line.length)),e;if(sev==='er')e=p+line.length;else{const m=/^\w+/.exec(line.slice(col-1));e=s+(m?m[0].length:1)}if(e<=s)s=Math.max(p,e-1);diag.push({s,e:Math.max(e,s+1),ln,col,msg,sev})})}catch(x){}}probs();marks()}
+function probs(){const er=diag.filter(d=>d.sev==='er').length,wn=diag.length-er;$('#pr').innerHTML=diag.length?diag.map(d=>'<div class="sr" data-pl="'+d.ln+'" data-pc="'+(d.col-1)+'">'+(d.sev==='er'?'⊗':'⚠')+' '+esc(d.msg)+' <span class="mu">'+esc(active)+' ['+d.ln+', '+d.col+']</span></div>').join(''):'No problems have been detected in the workspace.';$('#ec').textContent='⊗ '+er+' ⚠ '+wn;$('#ph [data-p="pr"]').textContent='PROBLEMS'+(diag.length?' '+diag.length:'')}
+$('#pr').onclick=e=>{const r=e.target.closest('[data-pl]');if(r)selAt(+r.dataset.pl,+r.dataset.pc,0)};
+function nextProb(d){if(!diag.length)return toast('No problems');const s=ta.selectionStart,L=[...diag].sort((a,b)=>a.s-b.s);let p=d>0?L.find(x=>x.s>s):[...L].reverse().find(x=>x.s<s);if(!p)p=d>0?L[0]:L[L.length-1];ta.focus();ta.setSelectionRange(p.s,p.s);reveal(p.s);toast(p.msg,p.sev==='er'?'err':'')}
+const SNIP={def:'def $0():\n    pass',class:'class $0:\n    def __init__(self):\n        pass',for:'for i in range($0):\n    pass',forin:'for item in $0:\n    pass',while:'while $0:\n    pass',if:'if $0:\n    pass',ifelse:'if $0:\n    pass\nelse:\n    pass',ifmain:'if __name__ == "__main__":\n    $0',try:'try:\n    $0\nexcept Exception as e:\n    print(e)',with:'with open("$0") as f:\n    data = f.read()',lambda:'lambda x: $0',main:'def main():\n    $0\n\nif __name__ == "__main__":\n    main()',np:'import numpy as np$0',plt:'import matplotlib.pyplot as plt$0',pd:'import pandas as pd$0',print:'print($0)',inp:'input("$0")'};
+function accept(i){const x=acI[i];if(!x)return;acSkip=true;const s=ta.selectionStart;acHide();
+ if(x[1]==='snippet'){const v=ta.value,ls=v.lastIndexOf('\n',s-1)+1,id=ind(v.slice(ls,s));let b=SNIP[x[0]].split('\n').join('\n'+id);const k=b.indexOf('$0');b=b.replace('$0','');rep(s-acP.length,s,b);if(k>=0){const p=s-acP.length+k;ta.setSelectionRange(p,p)}}
+ else rep(s-acP.length,s,x[0])}
+function acHide(){$('#ac').style.display='none';acI=[]}
+function showAc(){const d=$('#ac'),s=ta.selectionStart,ls=ta.value.lastIndexOf('\n',s-1)+1,col=s-ls-acP.length;d.innerHTML=acI.map((x,i)=>'<div class="ai'+(i===acS?' on':'')+'" data-i="'+i+'"><span>'+esc(x[0])+'</span><i>'+esc(x[1]||'')+'</i></div>').join('');d.style.display='block';
+ d.style.left=Math.min(Math.max(0,8+col*cw()-ta.scrollLeft),Math.max(0,ta.clientWidth-210))+'px';const top=(lineOf(s)+1)*LH()-ta.scrollTop;d.style.top=(top+d.offsetHeight>ta.clientHeight?Math.max(0,top-LH()-d.offsetHeight):top)+'px';const on=d.querySelector('.on');if(on)on.scrollIntoView({block:'nearest'})}
+async function ac(force){const tok=++acTok,v=ta.value,s=ta.selectionStart;if(!active||s!==ta.selectionEnd)return acHide();const m=/[A-Za-z_]\w*$/.exec(v.slice(0,s)),pre=m?m[0]:'',dot=v[s-pre.length-1]==='.',ls=v.lastIndexOf('\n',s-1)+1;
+ if(!pre&&!dot&&force!==true)return acHide();if(v.slice(ls,s).includes('#'))return acHide();let list=[];
+ if(!dot)Object.keys(SNIP).forEach(k=>list.push([k,'snippet']));
+ if(jedi&&eng==='py'){try{syncF();try{await py.loadPackagesFromImports(v)}catch(e){}if(tok!==acTok)return;list=list.concat(py.globals.get('_cmp')(v,lineOf(s)+1,s-ls).toJs().map(x=>[x[0],x[1]]))}catch(e){}}
+ if(!dot){const seen=new Set(list.map(x=>x[0])),add=(n,t)=>{if(!seen.has(n)){seen.add(n);list.push([n,t])}};KW.forEach(k=>add(k,'keyword'));BI.forEach(k=>add(k,'builtin'));Object.values(files).forEach(f=>(f.match(/[A-Za-z_]\w{2,}/g)||[]).forEach(w=>add(w,'text')))}
+ if(tok!==acTok)return;const p=pre.toLowerCase();const seen2=new Set();list=list.filter(x=>x[0]!==pre&&x[0].toLowerCase().startsWith(p)&&(pre.startsWith('_')||!x[0].startsWith('_'))&&!seen2.has(x[0])&&seen2.add(x[0])).slice(0,30);if(!list.length)return acHide();acI=list;acS=0;acP=pre;showAc()}
+function sig(){const g=$('#sg');if(!jedi||eng!=='py'||!active){g.style.display='none';return}const v=ta.value,s=ta.selectionStart,ls=v.lastIndexOf('\n',s-1)+1;if(!/[(,]/.test(v.slice(ls,s))){g.style.display='none';return}
+ try{const r=py.globals.get('_sig')(v,lineOf(s)+1,s-ls).toJs();if(!r.length){g.style.display='none';return}const str=r[0],ix=r[1],m=/^([^(]*\()(.*)\)(.*)$/.exec(str);
+  if(!m)g.textContent=str;else g.innerHTML=esc(m[1])+m[2].split(', ').map((p,i)=>i===ix?'<b>'+esc(p)+'</b>':esc(p)).join(', ')+esc(')'+m[3]);
+  g.style.display='block';g.style.left=Math.max(0,Math.min(8+(s-ls)*cw()-ta.scrollLeft,ta.clientWidth-260))+'px';g.style.top=Math.max(0,lineOf(s)*LH()-ta.scrollTop-g.offsetHeight-2)+'px'}catch(e){g.style.display='none'}}
+function gotoDef(){if(!jedi||eng!=='py')return toast('Go to Definition er jonno Jedi (autocomplete) ready hote hobe','err');const v=ta.value,s=ta.selectionStart,ls=v.lastIndexOf('\n',s-1)+1;syncF();
+ try{const r=py.globals.get('_goto')(v,lineOf(s)+1,s-ls).toJs();if(!r.length)return toast('No definition found');const[path,ln,col]=r;if(!path){goLine(ln,col)}else if(path.startsWith('/home/pyodide/')){const f=path.slice(14);if(files[f]!==undefined){navPush();openF(f);selAt(ln,col,0)}else toast('Definition: '+f)}else toast('Definition library te: '+path.split('/').slice(-2).join('/'))}catch(e){toast('No definition found')}}
+ta.addEventListener('input',()=>{if(!active)return;files[active]=ta.value;if(S.auto){store();if(handle){clearTimeout(wbT);wbT=setTimeout(()=>wb(active),700)}}else if(!unsaved.has(active)){unsaved.add(active);tabsR()}diag=[];paint();lint();clearTimeout(olT);olT=setTimeout(()=>{if(vw==='ex')refreshSide();scm()},500);clearTimeout(sgT);sgT=setTimeout(sig,250);if(acSkip){acSkip=false;acHide()}else{clearTimeout(acT);acT=setTimeout(ac,150)}});
+ta.addEventListener('keydown',e=>{if(!acI.length)return;if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();e.stopImmediatePropagation();acS=(acS+(e.key==='ArrowDown'?1:acI.length-1))%acI.length;showAc()}else if(e.key==='Enter'||e.key==='Tab'){if(e.ctrlKey||e.metaKey||e.shiftKey){acHide();return}e.preventDefault();e.stopImmediatePropagation();accept(acS)}else if(e.key==='Escape'){e.stopImmediatePropagation();acHide()}else if(['ArrowLeft','ArrowRight','Home','End','PageUp','PageDown'].includes(e.key))acHide()});
+ta.addEventListener('blur',()=>setTimeout(acHide,150));
+$('#ac').addEventListener('pointerdown',e=>{e.preventDefault();const d=e.target.closest('.ai');if(d)accept(+d.dataset.i)});
+ta.addEventListener('scroll',sync);
+let sct=0;document.addEventListener('selectionchange',()=>{if(document.activeElement!==ta)return;cancelAnimationFrame(sct);sct=requestAnimationFrame(()=>{pos();marks();clearTimeout(crT);crT=setTimeout(crumb,120)})});
+ta.addEventListener('keydown',e=>{
+ const v=ta.value,s=ta.selectionStart,en=ta.selectionEnd;
+ if(e.key==='Tab'){e.preventDefault();if(e.shiftKey)C.outdent();else if(v.slice(s,en).includes('\n'))C.indent();else rep(s,en,TAB())}
+ else if(e.key==='Enter'&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();const ls=v.lastIndexOf('\n',s-1)+1,line=v.slice(ls,s);let i=ind(line);
+  if(s===en&&'([{'.includes(v[s-1]||'x')&&')]}'.includes(v[s]||'x')){rep(s,en,'\n'+i+TAB()+'\n'+i);const p=s+1+i.length+TAB().length;ta.setSelectionRange(p,p);return}
+  if(/:\s*$/.test(line))i+=TAB();else if(/^\s*(return|pass|break|continue|raise)\b/.test(line)&&i.length>=S.tab)i=i.slice(0,i.length-S.tab);rep(s,en,'\n'+i)}
+ else if(e.key==='Backspace'&&s===en&&s>0){const ls=v.lastIndexOf('\n',s-1)+1,before=v.slice(ls,s);
+  if(S.pairs&&'([{"\''.includes(v[s-1])&&{'(':')','[':']','{':'}','"':'"',"'":"'"}[v[s-1]]===v[s]){e.preventDefault();rep(s-1,s+1,'')}
+  else if(before.length>0&&/^ +$/.test(before)&&before.length%S.tab===0){e.preventDefault();rep(s-S.tab,s,'')}}
+ else if(e.key==='Home'&&!e.shiftKey&&!e.ctrlKey&&!e.metaKey){const ls=v.lastIndexOf('\n',s-1)+1,fi=ls+ind(v.slice(ls,v.indexOf('\n',ls)<0?v.length:v.indexOf('\n',ls))).length;e.preventDefault();const p=s===fi?ls:fi;ta.setSelectionRange(p,p)}
+ else if(S.pairs&&')]}"\''.includes(e.key)&&s===en&&v[s]===e.key){e.preventDefault();ta.setSelectionRange(s+1,s+1)}
+ else if(S.pairs){const p={'(':')','[':']','{':'}','"':'"',"'":"'"};if(p[e.key]&&!e.ctrlKey&&!e.metaKey){e.preventDefault();const sel=v.slice(s,en);rep(s,en,e.key+sel+p[e.key]);ta.setSelectionRange(s+1,s+1+sel.length)}}
+});
+gut.addEventListener('click',e=>{const ln=Math.floor((e.offsetY+gut.scrollTop)/LH())+1;if(e.ctrlKey||e.metaKey){const on=bpToggle(ln);paint();if(vw==='ru')viewRun();toast((on?'Breakpoint set':'Breakpoint removed')+' at line '+ln);return}selAt(ln,0,0);C.selLine()});
+gut.addEventListener('dblclick',e=>{const ln=Math.floor((e.offsetY+gut.scrollTop)/LH())+1;const on=bpToggle(ln);paint();if(vw==='ru')viewRun();toast((on?'Breakpoint set':'Breakpoint removed')+' at line '+ln)});
+$('#mm').addEventListener('pointerdown',e=>{const go=ev=>{const y=ev.clientY-$('#mm').getBoundingClientRect().top;ta.scrollTop=Math.max(0,Math.floor(y/3)*LH()-ta.clientHeight/2);sync()};go(e);const mv=ev=>go(ev),up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up)};addEventListener('pointermove',mv);addEventListener('pointerup',up)});
+const keys=['Tab','(',')','[',']','{','}',':','=','"',"'",'_','#','+','-','*','/','<','>',',','.'];
+$('#keys').innerHTML=keys.map(k=>'<button data-k="'+esc(k)+'">'+esc(k)+'</button>').join('');
+$('#keys').addEventListener('pointerdown',e=>{const k=e.target.dataset.k;if(!k)return;e.preventDefault();rep(ta.selectionStart,ta.selectionEnd,k==='Tab'?TAB():k)});
+function showPanel(p){$$('.pb').forEach(x=>x.classList.toggle('on',x.id===p));$$('#ph [data-p]').forEach(x=>x.classList.toggle('a',x.dataset.p===p));panelShow(true);if(p==='term')$('#tin').focus()}
+function panelShow(on){$('#panel').style.display=on?'flex':'none';$('#psp').style.display=on?'':'none';setTimeout(paint,0)}
+function togglePanel(){if($('#panel').style.display==='none')showPanel('term');else panelShow(false)}
+function maxPanel(){const r=$('#body').getBoundingClientRect(),p=$('#panel');pmax=!pmax;if(S.ppos==='right')p.style.width=(pmax?r.width-120:S.pw)+'px';else p.style.height=(pmax?r.height-80:S.ph)+'px';$('#pmx').textContent=pmax?'⌄':'⌃';setTimeout(paint,0)}
+function sizePanel(d){pmax=false;const r=$('#body').getBoundingClientRect();if(S.ppos==='right'){S.pw=Math.max(200,Math.min(r.width-200,S.pw+d))}else S.ph=Math.max(60,Math.min(r.height-100,S.ph+d));apply();store()}
+$('#ph').onclick=e=>{const t=e.target;if(t.dataset.p)showPanel(t.dataset.p);if(t.id==='pclr'){tout.innerHTML='';$('#ou').textContent=''}if(t.id==='pmx')maxPanel();if(t.id==='pcl')panelShow(false)};
+function drag(el,move){el.addEventListener('pointerdown',e=>{e.preventDefault();el.setPointerCapture(e.pointerId);pmax=false;const mv=ev=>move(ev),up=()=>{el.removeEventListener('pointermove',mv);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up);store();paint()};el.addEventListener('pointermove',mv);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up)})}
+drag($('#psp'),ev=>{const r=$('#body').getBoundingClientRect();if(S.ppos==='right'){S.pw=Math.max(160,Math.min(r.width-160,r.right-ev.clientX));$('#panel').style.width=S.pw+'px'}else{S.ph=Math.max(50,Math.min(r.height-90,r.bottom-ev.clientY));$('#panel').style.height=S.ph+'px'}});
+drag($('#ssp'),ev=>{S.sw=Math.max(120,Math.min(innerWidth-200,ev.clientX-46));$('#side').style.width=S.sw+'px'});
+$('#psp').addEventListener('dblclick',maxPanel);
+const AC16=['#000','#cd3131','#0dbc79','#e5e510','#2472c8','#bc3fbc','#11a8cd','#e5e5e5','#666','#f14c4c','#23d18b','#f5f543','#3b8eea','#d670d6','#29b8db','#fff'];
+function ansi(cs,st){const col=/color:([^;]+)/.exec(st);let cl=col?col[1]:'',b=/font-weight/.test(st),u=/underline/.test(st);for(const x of cs.split(';').map(Number)){if(!x){cl='';b=false;u=false}else if(x===1)b=true;else if(x===4)u=true;else if(x>=30&&x<=37)cl=AC16[x-30];else if(x>=90&&x<=97)cl=AC16[x-82];else if(x===39)cl=''}return(cl?'color:'+cl+';':'')+(b?'font-weight:bold;':'')+(u?'text-decoration:underline;':'')}
+function w(t,c,noOut){const box=document.createElement('span');if(c)box.className=c;t=String(t);
+ if(c==='err'){t.split(/(\n)/).forEach(l=>{const m=/^(\s*File ")([^"]+)(", line )(\d+)(.*)$/.exec(l);if(m&&files[m[2]]!==undefined){box.append(m[1]);const a=document.createElement('a');a.className='lk';a.textContent=m[2]+m[3]+m[4];a.onclick=()=>{openF(m[2]);goLine(+m[4])};box.append(a,m[5])}else box.append(l)})}
+ else{let st='';t.split(/\x1b\[([\d;]*)m/).forEach((p,i)=>{if(i%2)st=ansi(p,st);else if(p){const s=document.createElement('span');if(st)s.style.cssText=st;s.textContent=p;box.append(s)}})}
+ tout.append(box);const p=$('#term');p.scrollTop=p.scrollHeight;if(c==='sys'&&!noOut)$('#ou').append(document.createTextNode(t))}
+const loadS=(u,ms)=>new Promise((r,j)=>{const s=document.createElement('script');const t=setTimeout(()=>j(new Error('timeout')),ms||10000);s.src=u;s.onload=()=>{clearTimeout(t);r()};s.onerror=()=>{clearTimeout(t);j(new Error('blocked'))};document.head.appendChild(s)});
+const tm=(p,ms)=>Promise.race([p,new Promise((_,j)=>setTimeout(()=>j(new Error('timeout')),ms))]);
+const PY='https://cdn.jsdelivr.net/pyodide/v314.0.7/full/',SK='https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/';
+const INIT=`import builtins, js
+def _inp(p=''):
+    v = js.prompt(str(p))
+    v = '' if v is None else v
+    print(str(p) + v)
+    return v
+builtins.input = _inp
+def _lint(src):
+    import ast
+    try:
+        tree = compile(src, 'x', 'exec', flags=ast.PyCF_ONLY_AST)
+    except SyntaxError as e:
+        return [[e.lineno or 1, e.offset or 1, e.msg, 'er']]
+    out = []
+    try:
+        from pyflakes.checker import Checker
+        for m in Checker(tree, 'x').messages:
+            out.append([m.lineno, m.col + 1, m.message % m.message_args, 'wn'])
+    except Exception:
+        pass
+    return sorted(out)[:50]
+`;
+const CMP=`import jedi
+def _cmp(src, line, col):
+    try:
+        return [[c.name, c.type] for c in jedi.Script(src).complete(line, col)[:80]]
+    except Exception:
+        return []
+def _sig(src, line, col):
+    try:
+        s = jedi.Script(src).get_signatures(line, col)
+        if s:
+            return [s[0].to_string(), s[0].index if s[0].index is not None else -1]
+    except Exception:
+        pass
+    return []
+def _goto(src, line, col):
+    try:
+        for n in jedi.Script(src).goto(line, col, follow_imports=True):
+            return [str(n.module_path or ''), n.line or 1, n.column or 0]
+    except Exception:
+        pass
+    return []
+`;
+const CLR=`import sys,importlib
+importlib.invalidate_caches()
+for m in list(sys.modules):
+    f=getattr(sys.modules[m],'__file__',None)
+    if isinstance(f,str) and f.startswith('/home/pyodide/'): del sys.modules[m]`;
+async function bg(){try{try{await py.loadPackage('jedi')}catch(e){await py.loadPackage('micropip');await py.pyimport('micropip').install('jedi')}await py.runPythonAsync(CMP);jedi=true;w('Autocomplete + signature help + go to definition ready.\n','sys')}catch(e){w('Autocomplete: sudhu basic (jedi load hoy ni).\n','sys')}
+ try{await py.loadPackage('micropip');await py.pyimport('micropip').install('pyflakes');flakes=true;lint();w('Linting (pyflakes) ready.\n','sys')}catch(e){}}
+readyP=(async()=>{w('MhCoder by MH Sompod\n','sys');w('Python engine load hocche…\n','sys');
+ try{await loadS(PY+'pyodide.js',20000);w('Python download hocche (10-20 MB, prothom bar somoy lage)…\n','sys');py=await tm(loadPyodide({indexURL:PY}),150000);py.setStdout({batched:t=>w(t+'\n')});py.setStderr({batched:t=>w(t+'\n','err')});await py.runPythonAsync(INIT);eng='py';
+  const pyVersion=py.runPython("import sys; '.'.join(map(str, sys.version_info[:3]))");$('#engb').textContent='{} Python '+pyVersion+' (Pyodide)';w('Python '+pyVersion+' ready. Packages load as needed.\n','sys');toast('Python '+pyVersion+' ready');lint();bg()}
+ catch(e){w('Full Python load hoy ni ('+(e.message||e)+'). Basic engine load hocche…\n','sys');
+  try{await loadS(SK+'skulpt.min.js',45000);await loadS(SK+'skulpt-stdlib.js',60000);eng='sk';$('#engb').textContent='{} Python (Skulpt, limited)';w('⚠ Full Python ei page e load hoy ni. Basic Python cholbe, numpy/pandas na. Full version er jonno file ta nijer hosting e open koro.\n','err')}
+  catch(e2){$('#engb').textContent='{} Python (offline)';w('Python engine load hoy ni ('+(e.message||e)+' / '+(e2.message||e2)+'). Page reload koro, ba onno network/browser e try koro.\n','err')}}})();
+function rd(x){const u=String(x).replace(/^\.\//,'');if(files[u]!==undefined)return files[u];if(Sk.builtinFiles===undefined||Sk.builtinFiles.files[x]===undefined)throw "File not found: '"+x+"'";return Sk.builtinFiles.files[x]}
+function clean(m){m=m.replace(/\/home\/pyodide\//g,'');const i=m.indexOf('Traceback');if(i<0)return m;const L=m.slice(i).split('\n'),o=[];for(let j=0;j<L.length;j++){if(/File "(\/lib\/|\/lib|.*pyodide)|_pyodide/.test(L[j])){j++;continue}o.push(L[j].replace('File "<exec>"','File "'+(runLabel||active)+'"'))}return o.join('\n')}
+let runLabel='',lastGlobals=null;
+async function runPy(code,label){await py.loadPackagesFromImports(code);
+ for(let i=0;i<6;i++){try{const g=py.globals.get('dict')();g.set('__name__','__main__');g.set('__file__','/home/pyodide/'+label);await py.runPythonAsync(code,{globals:g});lastGlobals=g;return}
+  catch(e){const m=/No module named '(\w+)/.exec(e.message||'');if(m&&i<5&&files[m[1]+'.py']===undefined&&!dirs.has(m[1])){w('pip install '+m[1]+' …\n','sys');await pipi([m[1]])}else throw e}}}
+async function pipi(p){if(eng!=='py'){w('pip ke full Python engine lage.\n','err');return}for(const n of p){try{await py.loadPackage(n);w('Installed '+n+'\n','sys');continue}catch(e){}try{await py.loadPackage('micropip');await py.pyimport('micropip').install(n);w('Successfully installed '+n+'\n','sys')}catch(e){w(String(e.message).split('\n').slice(-2).join('\n')+'\n','err')}}}
+async function runCode(code,label){if(busy||dbg.active)return;if(!eng&&readyP){w('Python engine load hocche, opekkha korchi…\n','sys');await readyP}busy=true;runLabel=label;$('#rb').textContent='⏳';if(S.clr)tout.innerHTML='';const t0=performance.now();let ok=true;
+ try{if(eng==='py'){const d=document.createElement('div');tout.append(d);document.pyodideMplTarget=d;syncF();py.runPython(CLR);await runPy(code,label)}
+  else if(eng==='sk'){Sk.configure({output:t=>w(t),read:rd,inputfun:p=>prompt(p)||'',inputfunTakesPrompt:true,__future__:Sk.python3});await Sk.misceval.asyncToPromise(()=>Sk.importMainWithBody('<stdin>',false,code,true))}
+  else{w('Python engine ready na.\n','err');ok=false}}
+ catch(e){ok=false;w(clean(e.message||String(e))+'\n','err')}
+ if(eng==='py')pullF();w('['+(ok?'Done':'Exited with error')+' in '+((performance.now()-t0)/1000).toFixed(2)+'s]\n','sys');busy=false;runLabel='';$('#rb').textContent='▷'}
+async function runPythonOnly(){if(!active)return toast('Kono file open nai','err');files[active]=ta.value;store();showPanel('term');w(pstr()+'python '+active+'\n','pr');await runCode(files[active],active)}
+function ideOut(html){const el=document.getElementById('ide-result');el.style.display='block';el.innerHTML=html;}
+function ideText(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function currentLang(){const n=(active||'').toLowerCase();if(n.endsWith('.py'))return 'Python';if(/\.html?$/.test(n))return 'HTML';if(n.endsWith('.css'))return 'CSS';if(n.endsWith('.js'))return 'JavaScript';if(n.endsWith('.java'))return 'Java';if(/\.(sql|mysql)$/.test(n))return 'MySQL';return 'Text';}
+function idePreview(){if(!active)return toast('Open a file first','err');files[active]=ta.value;store();let html='';const n=active.toLowerCase();if(n.endsWith('.html')||n.endsWith('.htm')){html=files[active];const css=Object.entries(files).filter(([k])=>k.toLowerCase().endsWith('.css')).map(([,v])=>v).join('\n');if(css&&/<\/head>/i.test(html))html=html.replace(/<\/head>/i,'<style>'+css.replace(/<\/style/gi,'<\\/style')+'</style></head>');}
+else if(n.endsWith('.css')){html='<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+files[active].replace(/<\/style/gi,'<\\/style')+'</style></head><body><h1>CSS Preview</h1><p>Edit your stylesheet to see changes.</p><button>Sample Button</button><div class="card">Sample card</div></body></html>'}
+else if(n.endsWith('.js')){html='<!doctype html><html><body><h2>JavaScript Preview</h2><pre id="out"></pre><script>const log=(...a)=>document.querySelector("#out").textContent+=a.join(" ")+"\\n";console.log=log;try{'+files[active]+'}catch(e){log(e.stack||e)}</scr'+'ipt></body></html>'}
+else if(n.endsWith('.md')){html='<!doctype html><meta charset="utf-8"><body style="font:16px system-ui;max-width:850px;margin:40px auto;line-height:1.6">'+md2h(files[active])+'</body>'}
+else return toast('Preview supports HTML, CSS, JavaScript and Markdown','err');const frame=document.querySelector('#ide-preview iframe');frame.srcdoc=html;document.getElementById('ide-preview').style.display='flex';}
+let mhCsrf='';
+async function apiRun(path,payload){if(!mhCsrf)await mhEnsureAuth();const r=await fetch('/api/'+path,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':mhCsrf},body:JSON.stringify(payload)});let data;try{data=await r.json()}catch{throw new Error('Backend returned an invalid response')}if(r.status===401){mhCsrf='';await mhEnsureAuth();return apiRun(path,payload)}if(!r.ok||data.ok===false)throw new Error(data.error||('HTTP '+r.status));return data;}
+async function run(){if(!active)return toast('Open a file first','err');files[active]=ta.value;store();const lang=currentLang();document.getElementById('ide-language').textContent=lang;const code=files[active];const t0=performance.now();ideOut('<span>Running '+ideText(active)+'…</span>');
+try{if(lang==='Python'){document.getElementById('ide-result').style.display='none';await runPythonOnly();return;}
+if(['HTML','CSS','JavaScript'].includes(lang)){idePreview();ideOut('<span class="ok">Preview opened successfully.</span>');return;}
+if(lang==='Java'){const d=await apiRun('java/run',{filename:active.split('/').pop(),code,input:document.getElementById('ide-stdin').value});ideOut('<span class="'+(d.exitCode===0?'ok':'bad')+'">'+(d.exitCode===0?'Compilation and execution successful':'Java process exited with code '+d.exitCode)+'</span>\\n'+ideText(d.output||'(No output)')+(d.error?'\\n'+ideText(d.error):''));showPanel('term');w('--- Java: '+active+' ---\\n'+(d.output||'')+(d.error?'\\n'+d.error:'')+'\\n','sys');return;}
+if(lang==='MySQL'){const d=await apiRun('mysql/query',{database:document.getElementById('ide-db').value.trim()||'mhcoder',sql:code});let h='<span class="ok">Query executed successfully · '+d.durationMs+' ms · '+d.rowCount+' row(s)</span>';if(d.columns?.length){h+='<table><thead><tr>'+d.columns.map(c=>'<th>'+ideText(c)+'</th>').join('')+'</tr></thead><tbody>'+d.rows.map(row=>'<tr>'+d.columns.map(c=>'<td>'+ideText(row[c]===null?'NULL':typeof row[c]==='object'?JSON.stringify(row[c]):row[c])+'</td>').join('')+'</tr>').join('')+'</tbody></table>';}else h+='\\nAffected rows: '+(d.affectedRows??0);ideOut(h);return;}
+throw new Error('No execution provider for '+lang+'. Supported: Python, HTML, CSS, JavaScript, Java, MySQL.');}
+catch(e){ideOut('<span class="bad">Execution error</span>\\n'+ideText(e.message||e));toast(e.message||'Execution failed','err');}finally{document.getElementById('ide-hint').textContent='Completed in '+((performance.now()-t0)/1000).toFixed(2)+'s';}}
+function runSel(){if(!active)return;const s=ta.selectionStart,e=ta.selectionEnd;const code=s===e?ta.value.slice(lr()[0],lr()[1]):ta.value.slice(s,e);if(!code.trim())return;showPanel('term');w(pstr()+'# run selection\n','pr');runCode(code,active)}
+const pstr=()=>'PS '+wsName+(cwd?'\\'+cwd.replace(/\//g,'\\'):'')+'> ';
+function setP(){$('#tp').textContent=repl?'>>>':pstr().trim()}
+const rp=p=>{const parts=((p&&p[0]==='/')?p:(cwd?cwd+'/':'')+(p||'')).split('/').filter(x=>x&&x!=='.'),o=[];parts.forEach(x=>x==='..'?o.pop():o.push(x));return o.join('/')};
+const isDir=p=>p===''||dirs.has(p)||Object.keys(files).some(f=>f.startsWith(p+'/'));
+async function replRun(code){if(eng!=='py'){w('REPL er jonno full Python lagbe.\n','err');return}try{if(!replG){replG=py.globals.get('dict')();replG.set('__name__','__main__')}try{await py.loadPackagesFromImports(code)}catch(e){}syncF();const r=await py.runPythonAsync(code,{globals:replG});if(r!==undefined&&r!==null)w(py.runPython('repr')(r)+'\n')}catch(e){w(clean(e.message||String(e))+'\n','err')}}
+async function sh(line){line=line.trim();w((repl?'>>> ':pstr())+line+'\n','pr');if(!line)return;hist.push(line);histI=hist.length;
+ if(repl){if(/^(exit|quit)\s*\(\s*\)$/.test(line)){repl=false;setP();return}return replRun(line)}
+ const a=(line.match(/"[^"]*"|'[^']*'|\S+/g)||[]).map(x=>x.replace(/^["']|["']$/g,'')),c=a[0].toLowerCase();
+ try{switch(c){
+  case'clear':case'cls':tout.innerHTML='';break;
+  case'help':w('python [file|-c code]  pip install|uninstall|list  ls cd pwd cat touch mkdir rm mv cp echo head tail wc grep tree  code <file>  git status|commit -m|log  history date whoami clear exit\n','sys');break;
+  case'pwd':w('/'+cwd+'\n');break;
+  case'cd':{if(!a[1])cwd='';else{const t=rp(a[1]);if(isDir(t))cwd=t;else w('cd: no such directory: '+a[1]+'\n','err')}setP();break}
+  case'ls':case'dir':{const t=rp(a[1]||''),pre=t?t+'/':'',set=new Set();Object.keys(files).forEach(p=>{if(p.startsWith(pre)){const r=p.slice(pre.length);set.add(r.includes('/')?r.split('/')[0]+'/':r)}});dirs.forEach(d=>{if(d.startsWith(pre)){const r=d.slice(pre.length);if(r)set.add(r.split('/')[0]+'/')}});w([...set].sort().join('\n')+'\n');break}
+  case'tree':{const t=tree();const pr=(n,p)=>{Object.keys(n.d).sort().forEach(k=>{w(p+'├─ '+k+'/\n');pr(n.d[k],p+'│  ')});n.f.forEach(f=>w(p+'├─ '+f[0]+'\n'))};pr(t,'');break}
+  case'cat':case'type':{const t=rp(a[1]);if(files[t]===undefined)w('cat: '+a[1]+': No such file\n','err');else w(files[t]+(files[t].endsWith('\n')?'':'\n'));break}
+  case'head':case'tail':{const t=rp(a[1]);if(files[t]===undefined){w('No such file\n','err');break}const L=files[t].split('\n');w((c==='head'?L.slice(0,10):L.slice(-10)).join('\n')+'\n');break}
+  case'wc':{const t=rp(a[1]);if(files[t]===undefined){w('No such file\n','err');break}const s=files[t];w((s.split('\n').length-1)+' lines  '+(s.trim()?s.trim().split(/\s+/).length:0)+' words  '+s.length+' chars  '+a[1]+'\n');break}
+  case'grep':{const t=rp(a[2]);if(files[t]===undefined){w('Usage: grep pattern file\n','err');break}files[t].split('\n').forEach((l,i)=>{if(l.toLowerCase().includes((a[1]||'').toLowerCase()))w((i+1)+': '+l+'\n')});break}
+  case'echo':w(a.slice(1).join(' ')+'\n');break;
+  case'touch':{const t=rp(a[1]);if(!t){w('touch: missing file\n','err');break}if(files[t]===undefined){files[t]='';mkParents(t);store();render();if(handle)wb(t)}break}
+  case'mkdir':{const t=rp(a[a.length-1]);if(!t){w('mkdir: missing name\n','err');break}dirs.add(t);mkParents(t+'/x');store();refreshSide();break}
+  case'rm':case'del':{const t=rp(a[a.length-1]);if(files[t]!==undefined){delete files[t];fsRm(t);rmDisk(t);open=open.filter(x=>x!==t);if(active===t)active=open[0]||'';store();render()}else if(isDir(t)&&/-r/i.test(a[1]||'')){for(const p of Object.keys(files))if(p.startsWith(t+'/')){delete files[p];open=open.filter(x=>x!==p);if(active===p)active=''}dirs=new Set([...dirs].filter(x=>x!==t&&!x.startsWith(t+'/')));if(!open.includes(active))active=open[0]||'';store();render()}else w('rm: cannot remove '+a[a.length-1]+'\n','err');break}
+  case'mv':case'cp':{const f=rp(a[1]),t=nm(rp(a[2]||''));if(files[f]===undefined||!t){w(c+': usage: '+c+' src dest\n','err');break}files[t]=files[f];mkParents(t);if(c==='mv'){delete files[f];fsRm(f);if(handle)rmDisk(f);open=open.map(x=>x===f?t:x);if(active===f)active=t}if(handle)wb(t);store();render();break}
+  case'code':case'open':{const t=rp(a[1]);if(!/\\.py$/i.test(t)){w('Only Python (.py) files are supported.\\n','err');break}if(files[t]!==undefined)openF(t);else w('code: file not found\n','err');break}
+  case'date':w(new Date().toString()+'\n');break;
+  case'whoami':w('MH Sompod\n');break;
+  case'history':hist.forEach((h,i)=>w((i+1)+'  '+h+'\n'));break;
+  case'exit':panelShow(false);break;
+  case'git':{if(a[1]==='status'){const ch=chg();w(ch.length?ch.map(x=>x[1]+'  '+x[0]).join('\n')+'\n':'nothing to commit, working tree clean\n')}else if(a[1]==='commit'){const i=a.indexOf('-m'),msg=i>0?a.slice(i+1).join(' '):'';if(!msg.trim()){w('git commit: provide -m "message"\n','err');break}base={...files};commits.unshift({msg,t:Date.now()});store();scm();refreshSide();w('[local] '+msg+'\n')}else if(a[1]==='log'){w(commits.length?commits.map(x=>'● '+x.msg+'  ('+new Date(x.t).toLocaleString()+')').join('\n')+'\n':'No local commits yet\n')}else if(a[1]==='push'){await ghPush()}else if(a[1]==='pull'){await ghPull()}else if(a[1]==='add'){w('Git staging is not implemented in this browser workspace; commits include all changes.\n','sys')}else w('git: status | add | commit -m "msg" | push | pull | log\n','err');break}
+  case'pip':case'pip3':{if(a[1]==='install')await pipi(a.slice(2).filter(x=>x[0]!=='-'));else if(a[1]==='list'||a[1]==='freeze'){w(py?Object.keys(py.loadedPackages||{}).join('\n')+'\n':'engine ready na\n')}else if(a[1]==='uninstall'){w('Browser e uninstall nai (page reload korle package reset hoy).\n','sys')}else w('pip install <pkg> | pip list\n','err');break}
+  case'python':case'python3':case'py':{if(a[1]==='-c'){await runCode(a.slice(2).join(' '),'<string>')}else if(!a[1]){if(eng!=='py')w('REPL er jonno full Python lagbe.\n','err');else{repl=true;setP();w('Python REPL (exit() diye ber hobe)\n','sys')}}else{const t=rp(a[1]);if(files[t]===undefined)w("python: can't open file '"+a[1]+"'\n",'err');else await runCode(files[t],t)}break}
+  default:w("'"+a[0]+"' is not recognized. 'help' likho.\n",'err')}}catch(e){w(e.message+'\n','err')}}
+$('#tin').onkeydown=e=>{const i=e.target;
+ if(e.key==='Enter'){const v=i.value;i.value='';sh(v)}
+ else if(e.key==='ArrowUp'){e.preventDefault();if(histI>0)i.value=hist[--histI]||''}
+ else if(e.key==='ArrowDown'){e.preventDefault();histI=Math.min(hist.length,histI+1);i.value=hist[histI]||''}
+ else if(e.key==='Tab'){e.preventDefault();const m=/(\S*)$/.exec(i.value),pre=m[1];if(!pre)return;const c=Object.keys(files).filter(f=>f.startsWith(rp(pre))||f.startsWith(pre));if(c.length===1)i.value=i.value.slice(0,i.value.length-pre.length)+c[0]}};
+setP();
+$('#wm').addEventListener('click',e=>{
+ const b=e.target.closest('[data-welcome]');if(!b)return;
+ const a=b.dataset.welcome;
+ if(a==='new')newFile();
+ else if(a==='file')openFile();
+ else if(a==='folder')openFolder();
+ else if(a==='zip')$('#fzip').click();
+});
+function drawWelcomeRecent(){
+ const box=$('#welcomeRecent');if(!box)return;
+ const items=recent.filter(n=>files[n]!==undefined).slice(0,8);
+ box.innerHTML=items.length?items.map(n=>'<button class="recent-file" data-recent="'+esc(n)+'">🐍 '+esc(n)+'</button>').join(''):'<span class="mu">No recent files</span>';
+}
+$('#welcomeRecent').onclick=e=>{const b=e.target.closest('[data-recent]');if(b)openF(b.dataset.recent)};
+function openSettings(){const SET=[['Theme','theme','sel',[['dark','Dark+'],['light','Light+'],['monokai','Monokai'],['solar','Solarized Dark'],['hc','High Contrast']]],['Editor font size','fs','num'],['Terminal font size','tfs','num'],['Tab size','tab','sel',[[2,'2'],[4,'4'],[8,'8']]],['Minimap','minimap','chk'],['Line numbers','ln','chk'],['Ruler at column 88','ruler','chk'],['Breadcrumbs','crumbs','chk'],['Auto close brackets & quotes','pairs','chk'],['Auto Save','auto','chk'],['Trim trailing whitespace on save','trim','chk'],['Insert final newline on save','fnl','chk'],['Format on save (autopep8)','fmt','chk'],['Run file on save','runsave','chk'],['Clear terminal before each run','clr','chk'],['Line endings (on export/save)','eol','sel',[['LF','LF'],['CRLF','CRLF']]],['Panel position','ppos','sel',[['bottom','Bottom'],['right','Right']]]];
+ $('#setl').innerHTML=SET.map(([t,k,ty,opts])=>'<div class="sr2"><span>'+t+'</span>'+(ty==='chk'?'<input type="checkbox" data-k="'+k+'"'+(S[k]?' checked':'')+'>':ty==='num'?'<input type="number" min="9" max="30" data-k="'+k+'" value="'+S[k]+'">':'<select data-k="'+k+'">'+opts.map(o=>'<option value="'+o[0]+'"'+(String(S[k])===String(o[0])?' selected':'')+'>'+o[1]+'</option>').join('')+'</select>')+'</div>').join('');
+ $('#set').style.display='flex'}
+$('#setl').onchange=e=>{const k=e.target.dataset.k;if(!k)return;const t=e.target;S[k]=t.type==='checkbox'?t.checked:t.type==='number'?Math.max(9,Math.min(30,+t.value||14)):(isNaN(+t.value)?t.value:+t.value);apply();store()};
+$('#setx').onclick=()=>$('#set').style.display='none';$('#set').addEventListener('pointerdown',e=>{if(e.target.id==='set')$('#set').style.display='none'});
+function setTheme(t){S.theme=t;apply();store();toast('Theme: '+t)}
+function zen(){const a=$('#app').classList;a.toggle('zen');if(a.contains('zen'))toast('Zen Mode: Esc ba Ctrl+K Z diye ber hobe');setTimeout(paint,0)}
+$('#zx').onclick=zen;
+function setFs(d){S.fs=d===0?14:Math.min(30,Math.max(9,S.fs+d));apply();store()}
+function tog(k,m){S[k]=!S[k];apply();store();toast(m+': '+(S[k]?'on':'off'))}
+function doPaste(){if(navigator.clipboard&&navigator.clipboard.readText)navigator.clipboard.readText().then(t=>{ta.focus();rep(ta.selectionStart,ta.selectionEnd,t)},()=>toast('Paste: browser permission dao ba Cmd/Ctrl+V chapo','err'));else toast('Cmd/Ctrl+V chapo')}
+const cmds=[
+['New File','Ctrl+N|Alt+N',()=>newFile()],['New Folder','',()=>newFolder()],['Open File…','Ctrl+O',openFile],['Open Folder…','Ctrl+K Ctrl+O',openFolder],['Save','Ctrl+S',save],['Save As… (Save to Files)','Ctrl+Shift+S',()=>toDevice()],
+['Save All','Ctrl+K S',saveAll],['Download File','',()=>download()],['Download All as ZIP','',exportZip],['Import ZIP…','',()=>$('#fzip').click()],
+['Close Editor','Ctrl+W|Alt+W',()=>closeTab()],['Close All Editors','Ctrl+K W',()=>closeMany(()=>true)],['Close Other Editors','',()=>closeMany(n=>n!==active)],['Close Editors to the Right','',()=>{const i=open.indexOf(active);closeMany(n=>open.indexOf(n)>i)}],
+['Reopen Closed Editor','Ctrl+Shift+T|Alt+Shift+T',()=>{let n;while((n=closed.pop())&&!(n in files));if(n)openF(n);else toast('Kono closed editor nai')}],
+['Revert File','',()=>{if(active in base){files[active]=base[active];store();render();toast('Reverted to last commit')}else toast('Commit kora version nai','err')}],
+['Rename File','F2|Ctrl+Alt+R',()=>rename()],['Delete File','',()=>delFile()],['Duplicate File','',()=>dupFile()],['Copy File Path','Ctrl+K P',()=>copyTxt(active)],['Reveal in Explorer','Ctrl+K R',()=>{view('ex',1);refreshSide()}],
+['Close Folder (Reset Workspace)','',async()=>{if(!await confirmBox('Reset workspace?','Shob file muche default main.py thakbe.','Reset'))return;files={'main.py':WELCOME};dirs=new Set();open=['main.py'];active='main.py';base={};handle=null;wsName='MhCoder';store();render()}],
+['Toggle Auto Save','',()=>tog('auto','Auto Save')],
+['Undo','',()=>{ta.focus();document.execCommand('undo')},'Ctrl+Z'],['Redo','',()=>{ta.focus();document.execCommand('redo')},'Ctrl+Y'],['Cut','',()=>{ta.focus();document.execCommand('cut')},'Ctrl+X'],['Copy','',()=>{ta.focus();document.execCommand('copy')},'Ctrl+C'],['Paste','',doPaste,'Ctrl+V'],
+['Find','Ctrl+F',()=>find(0)],['Replace','Ctrl+H|Ctrl+Alt+F',()=>find(1)],['Find Next','F3|Ctrl+Alt+ArrowDown',()=>fnd(1)],['Find Previous','Shift+F3|Ctrl+Alt+ArrowUp',()=>fnd(-1)],['Find in Files','Ctrl+Shift+F',()=>{view('se',1);$('#si').focus()}],['Replace in Files','Ctrl+Shift+H',()=>{view('se',1);$('#sr2').focus()}],
+['Toggle Line Comment','Ctrl+/',C.comment],['Add Line Comment','Ctrl+K Ctrl+C',C.addC],['Remove Line Comment','Ctrl+K Ctrl+U',C.remC],['Toggle Block Comment','Shift+Alt+A',C.block],
+['Format Document','Shift+Alt+F',()=>fmtDoc()],['Trim Trailing Whitespace','Ctrl+K Ctrl+X',()=>tr(t=>t.replace(/[ \t]+$/gm,''))],
+['Transform to Uppercase','',()=>tr(t=>t.toUpperCase())],['Transform to Lowercase','',()=>tr(t=>t.toLowerCase())],['Transform to Title Case','',()=>tr(title)],
+['Sort Lines Ascending','',()=>linesOp(L=>[...L].sort((a,b)=>a.localeCompare(b)))],['Sort Lines Descending','',()=>linesOp(L=>[...L].sort((a,b)=>b.localeCompare(a)))],['Delete Duplicate Lines','',()=>linesOp(L=>L.filter((x,i)=>L.indexOf(x)===i))],['Reverse Lines','',()=>linesOp(L=>[...L].reverse())],['Join Lines','',()=>linesOp(L=>[L.map((x,i)=>i?x.trim():x).join(' ')])],
+['Insert Line Below','Ctrl+Enter',C.below],['Insert Line Above','Ctrl+Shift+Enter',C.above],['Copy Line Down','Shift+Alt+ArrowDown',C.dupDown],['Copy Line Up','Shift+Alt+ArrowUp',C.dupUp],['Move Line Up','Alt+ArrowUp',C.moveUp],['Move Line Down','Alt+ArrowDown',C.moveDown],
+['Delete Line','Ctrl+Shift+K',C.delLine],['Delete All Right','Ctrl+K Ctrl+K',C.delEnd],['Delete All Left','Ctrl+K Ctrl+Backspace',C.delStart],['Indent Line','Ctrl+]',C.indent],['Outdent Line','Ctrl+[',C.outdent],
+['Select All','',()=>{ta.focus();ta.select()},'Ctrl+A'],['Select Line','Ctrl+L',C.selLine],['Add Selection To Next Find Match','Ctrl+D',C.nextOcc],['Expand Selection','Shift+Alt+ArrowRight',C.expand],['Shrink Selection','Shift+Alt+ArrowLeft',C.shrink],
+['Insert Current Date/Time','',()=>rep(ta.selectionStart,ta.selectionEnd,new Date().toLocaleString())],
+['Trigger Suggest','Ctrl+Space|Ctrl+I',()=>ac(true)],['Trigger Parameter Hints','Ctrl+Shift+Space',sig],
+['Show All Commands','Ctrl+Shift+P|F1',()=>pal('>')],['Go to File…','Ctrl+P',()=>pal('')],['Go to Line/Column…','Ctrl+G',()=>pal(':')],['Go to Symbol in Editor…','Ctrl+Shift+O',()=>pal('@')],['Go to Definition','F12|Ctrl+Alt+J',gotoDef],
+['Go Back','Alt+ArrowLeft',navBack],['Go Forward','Alt+ArrowRight',navFwd],['Go to Bracket','Ctrl+Shift+\\',()=>{const m=bmatch();if(!m)return;const p=ta.selectionStart;const t=(p===m[0]||p===m[0]+1)?m[1]:m[0];ta.setSelectionRange(t,t);reveal(t)}],
+['Go to Next Problem','F8|Ctrl+Alt+E',()=>nextProb(1)],['Go to Previous Problem','Shift+F8|Ctrl+Alt+Shift+E',()=>nextProb(-1)],
+['Next Editor','Ctrl+Tab|Alt+PageDown|Ctrl+Alt+ArrowRight',()=>{if(open.length){active=open[(open.indexOf(active)+1)%open.length];store();render()}}],['Previous Editor','Ctrl+Shift+Tab|Alt+PageUp|Ctrl+Alt+ArrowLeft',()=>{if(open.length){active=open[(open.indexOf(active)+open.length-1)%open.length];store();render()}}],
+['Toggle Primary Side Bar','Ctrl+B',()=>view(vw)],['Show Explorer','Ctrl+Shift+E',()=>view('ex',1)],['Show Source Control','Ctrl+Shift+G',()=>view('sc',1)],['Show Run and Debug','Ctrl+Shift+D',()=>view('ru',1)],['Show Python Packages','Ctrl+Shift+X',()=>view('xt',1)],
+['Toggle Panel','Ctrl+J|Ctrl+`',togglePanel],['New Terminal','Ctrl+Shift+`',()=>showPanel('term')],['Show Problems','Ctrl+Shift+M',()=>showPanel('pr')],['Show Output','Ctrl+Shift+U',()=>showPanel('ou')],['Show Debug Console','Ctrl+Shift+Y',()=>showPanel('db')],
+['Maximize / Restore Panel','',maxPanel],['Increase Panel Size','',()=>sizePanel(60)],['Decrease Panel Size','',()=>sizePanel(-60)],['Move Panel to Right','',()=>{S.ppos='right';apply();store()}],['Move Panel to Bottom','',()=>{S.ppos='bottom';apply();store()}],
+['Toggle Minimap','',()=>tog('minimap','Minimap')],['Toggle Breadcrumbs','',()=>tog('crumbs','Breadcrumbs')],['Toggle Line Numbers','',()=>tog('ln','Line numbers')],['Toggle Ruler','',()=>tog('ruler','Ruler')],
+['Toggle Status Bar','',()=>{const s=$('#status');s.style.display=s.style.display==='none'?'':'none';setTimeout(paint,0)}],['Toggle Activity Bar','',()=>{const s=$('#act');s.style.display=s.style.display==='none'?'':'none'}],
+['Toggle Zen Mode','Ctrl+K Z',zen],['Toggle Full Screen','F11',()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){toast('Full screen ei browser e nai','err')}}],
+['Zoom In','Ctrl+=|Ctrl+Shift++',()=>setFs(1)],['Zoom Out','Ctrl+-',()=>setFs(-1)],['Reset Zoom','Ctrl+0',()=>setFs(0)],
+['Color Theme: Dark+','',()=>setTheme('dark')],['Color Theme: Light+','',()=>setTheme('light')],['Color Theme: Monokai','',()=>setTheme('monokai')],['Color Theme: Solarized Dark','',()=>setTheme('solar')],['Color Theme: High Contrast','',()=>setTheme('hc')],
+['Indent Using 2 Spaces','',()=>{S.tab=2;apply();store()}],['Indent Using 4 Spaces','',()=>{S.tab=4;apply();store()}],['Indent Using 8 Spaces','',()=>{S.tab=8;apply();store()}],['Change End of Line: LF','',()=>{S.eol='LF';apply();store()}],['Change End of Line: CRLF','',()=>{S.eol='CRLF';apply();store()}],
+['Open Settings','Ctrl+,',openSettings],['Keyboard Shortcuts','Ctrl+K Ctrl+S',()=>pal('>')],['Python Language Mode','Ctrl+K M',()=>toast('This workspace supports Python (.py) only')],['Select Python Interpreter','',()=>toast('Python 3.14 (Pyodide 314.0.7)')],
+['Run Python File','F5|Ctrl+F5|Ctrl+Alt+N|Ctrl+Alt+Enter',run],['Run Selection/Line in Terminal','Shift+Enter',runSel],['Restart Python Engine','',()=>location.reload()],['Python: Clear REPL State','',()=>{replG=null;toast('REPL state cleared')}],['Python: Start REPL','',()=>{showPanel('term');sh('python')}],['Install Python Package…','',async()=>{const n=await ask('Package name (pip / pyodide)','',x=>x?'':'Package name dao');if(n)installPkg(n)}],
+['Clear Terminal','Ctrl+K Ctrl+L',()=>tout.innerHTML=''],['Kill Terminal','',()=>{repl=false;setP();panelShow(false)}],['Show Notifications','',()=>$('#bell').click()],
+['Git: Commit All','',()=>{view('sc',1);$('#cm').focus()}],['Git: Open Changes','',()=>showDiff()],['Git: Discard All Changes','',async()=>{if(!await confirmBox('Discard ALL changes?','Shob file last commit e ferot jabe.','Discard'))return;files={...base};if(!Object.keys(files).length)files={'main.py':WELCOME};open=open.filter(n=>n in files);if(!(active in files))active=open[0]||'';store();render()}],
+['About MhCoder','',()=>confirmBox('MhCoder — Python IDE','A Python-only code editor with a VS Code-style interface, running in your browser. Created by MH Sompod.','OK',true)]];
+async function createProjectTemplate(){const opts=[['Data Science Starter','data'],['Physics Animation Starter','physics'],['Contact Book App','contacts']];const choice=await ask('Project template: type data, physics, or contacts','data',x=>['data','physics','contacts'].includes(x.toLowerCase())?'':'Type data, physics, or contacts');if(!choice)return;const k=choice.toLowerCase();let pack={};
+ if(k==='data')pack={'main.py':'import csv\nfrom pathlib import Path\n\n# Load sample data\nwith open("sample.csv", newline="") as f:\n    rows = list(csv.DictReader(f))\nprint(rows)\n','sample.csv':'x,y\n1,2\n2,4\n3,9\n','README.md':'# Data Science Starter\n\nRun main.py. Add NumPy, pandas, or Matplotlib from Python Packages.\n'};
+ else if(k==='physics')pack={'main.py':'import math\n\n# Projectile motion (no air resistance)\nv0 = 20\nangle_deg = 45\ng = 9.81\nangle = math.radians(angle_deg)\nt_flight = 2 * v0 * math.sin(angle) / g\nrange_m = v0 * math.cos(angle) * t_flight\nprint(f"Flight time: {t_flight:.2f} s")\nprint(f"Range: {range_m:.2f} m")\n','README.md':'# Physics Animation Starter\n\nStart with equations and numerical simulations. Install matplotlib for plots.\n'};
+ else pack={'main.py':'import json\nfrom pathlib import Path\n\nDATA = Path("contacts.json")\n\ndef load_contacts():\n    if DATA.exists():\n        return json.loads(DATA.read_text())\n    return []\n\ndef add_contact(name, phone):\n    contacts = load_contacts()\n    contacts.append({"name": name, "phone": phone})\n    DATA.write_text(json.dumps(contacts, indent=2))\n\nif __name__ == "__main__":\n    print(load_contacts())\n','contacts.json':'[]\n','README.md':'# Contact Book Starter\n\nA simple JSON-backed contact book foundation.\n'};
+ const folder='';for(const [n,v] of Object.entries(pack)){files[n]=v;mkParents(n)}const main=Object.keys(pack).find(x=>x.endsWith('.py'));openF(main);store();render();toast('Created '+choice+' starter project');}
+const disp=c=>c[3]||c[1].split('|')[0];
+const byName=n=>cmds.find(c=>c[0]===n);
+function runCmd(m){cmdRecent=[m[0],...cmdRecent.filter(x=>x!==m[0])].slice(0,8);m[2]()}
+cmds.push(['Create Project from Template','',createProjectTemplate],['Show Python Practice','',()=>view('lab',1)],['Show Data Explorer','',()=>view('data',1)],['Preview CSV / TSV','',csvPreview],['Refresh Variable Explorer','',showVariables]);
+const MENUS={File:['New File','New Folder','Create Project from Template','Open File…','Open Folder…','Save','Save As… (Save to Files)','Save All','Download All as ZIP','Import ZIP…','Rename File','Delete File','Close Editor','Close All Editors','Reopen Closed Editor','Toggle Auto Save'],
+ Edit:['Undo','Redo','Cut','Copy','Paste','Find','Replace','Find in Files','Replace in Files','Toggle Line Comment','Add Line Comment','Remove Line Comment','Toggle Block Comment','Format Document','Trim Trailing Whitespace','Transform to Uppercase','Transform to Lowercase','Sort Lines Ascending','Delete Duplicate Lines','Join Lines'],
+ Selection:['Select All','Select Line','Expand Selection','Shrink Selection','Add Selection To Next Find Match','Copy Line Down','Copy Line Up','Move Line Up','Move Line Down'],
+ View:['Show All Commands','Show Explorer','Show Source Control','Show Python Packages','Show Python Practice','Show Data Explorer','Toggle Panel','Show Problems','Maximize / Restore Panel','Move Panel to Right','Move Panel to Bottom','Toggle Minimap','Toggle Zen Mode','Zoom In','Zoom Out','Reset Zoom','Python Language Mode'],
+ Go:['Go to File…','Go to Line/Column…','Go to Symbol in Editor…','Go to Definition','Go Back','Go Forward','Go to Next Problem','Next Editor'],
+ Run:['Run Python File','Run Selection/Line in Terminal','Restart Python Engine','Python: Start REPL','Install Python Package…'],
+ Terminal:['New Terminal','Clear Terminal','Kill Terminal','Toggle Panel'],
+ Help:['Keyboard Shortcuts','Open Settings','Show Notifications','About MhCoder']};
+$('#menubar').innerHTML=Object.keys(MENUS).map(k=>'<button>'+k+'</button>').join('');
+$('#menubar').onclick=e=>{const b=e.target.closest('button');if(!b)return;e.stopPropagation();const m=$('#menu');m.innerHTML=MENUS[b.textContent].filter(byName).map(n=>'<div data-n="'+esc(n)+'"><span>'+esc(n)+'</span><kbd>'+esc(disp(byName(n)))+'</kbd></div>').join('');m.style.left=b.offsetLeft+46+'px';m.style.top='30px';m.style.display='block'};
+$('#menu').onclick=e=>{const d=e.target.closest('[data-n]');$('#menu').style.display='none';if(d)runCmd(byName(d.dataset.n))};
+let pitems=[],psel=0;
+function pal(p){$('#pal').style.display='block';$('#pi').value=p;$('#pi').focus();plist()}
+function plist(){const v=$('#pi').value;
+ if(v[0]==='>'){const q=v.slice(1).trim().toLowerCase();let L=cmds.filter(c=>c[0].toLowerCase().includes(q));if(!q)L=[...cmdRecent.map(byName).filter(Boolean),...L.filter(c=>!cmdRecent.includes(c[0]))];pitems=L.map(c=>({t:c[0],k:disp(c),f:()=>runCmd(c)}))}
+ else if(v[0]===':'){const m=/^:\s*(\d+)?(?::(\d+))?/.exec(v)||[],n=parseInt(m[1]);pitems=[{t:'Go to line '+(n||'…')+(m[2]?', column '+m[2]:''),f:()=>goLine(n,(+m[2]||1)-1)}]}
+ else if(v[0]==='@'){const q=v.slice(1).toLowerCase();pitems=symbols().filter(s=>s.n.toLowerCase().includes(q)).map(s=>({t:(s.k==='class'?'◆ ':'ƒ ')+s.n,k:':'+s.l,f:()=>goLine(s.l)}))}
+ else if(v==='?'){pitems=[['>','Show and run commands'],[':','Go to line'],['@','Go to symbol in file'],['(kichu na)','Go to file']].map(x=>({t:x[0]+'   '+x[1],f:()=>{}}))}
+ else{const q=v.toLowerCase(),all=Object.keys(files),ord=[...recent.filter(x=>x in files),...all.filter(x=>!recent.includes(x))];pitems=ord.filter(n=>n.toLowerCase().includes(q)).map(n=>({t:ico(n)+' '+n,k:n===active?'active':'',f:()=>openF(n)}))}
+ psel=0;pdraw()}
+function pdraw(){$('#pl').innerHTML=pitems.slice(0,60).map((x,i)=>'<div class="pi'+(i===psel?' on':'')+'" data-i="'+i+'"><span>'+esc(x.t)+'</span>'+(x.k?'<kbd>'+esc(x.k)+'</kbd>':'')+'</div>').join('')}
+function pclose(){$('#pal').style.display='none';ta.focus()}
+function pgo(i){const x=pitems[i];pclose();if(x)setTimeout(x.f,0)}
+$('#pi').oninput=plist;
+$('#pi').onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();psel=Math.min(psel+1,pitems.length-1);pdraw()}else if(e.key==='ArrowUp'){e.preventDefault();psel=Math.max(psel-1,0);pdraw()}else if(e.key==='Enter'){e.preventDefault();pgo(psel)}};
+$('#pl').onclick=e=>{const d=e.target.closest('.pi');if(d)pgo(+d.dataset.i)};
+$('#pi').addEventListener('blur',()=>setTimeout(()=>{if(document.activeElement!==$('#pi'))$('#pal').style.display='none'},200));
+$('#cc').onclick=()=>pal('');
+const vm={c:0,a:0,s:0};
+function combo(e){const k=/^(Key|Digit)/.test(e.code)?e.code.replace(/^(Key|Digit)/,''):(e.code==='Space'?'Space':e.key.length===1?e.key.toUpperCase():e.key);const v=e.isTrusted?vm:{c:0,a:0,s:0};return((e.ctrlKey||e.metaKey||v.c)?'Ctrl+':'')+((e.shiftKey||v.s)?'Shift+':'')+((e.altKey||v.a)?'Alt+':'')+k}
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){if($('#pal').style.display==='block')pclose();else if($('#set').style.display==='flex')$('#set').style.display='none';else if($('#dv').style.display==='flex')$('#dv').style.display='none';else if(fwOpen())closeFind();else if($('#app').classList.contains('zen'))zen();$('#menu').style.display=$('#ctx').style.display=$('#notif').style.display='none';return}
+ if(['Control','Shift','Alt','Meta'].includes(e.key))return;
+ const c=(e.ctrlKey||e.metaKey)&&e.code==='Slash'?'Ctrl+/':combo(e),inTerm=document.activeElement===$('#tin');
+ if(inTerm&&(c==='Ctrl+L'||(c==='Ctrl+C'&&$('#tin').selectionStart===$('#tin').selectionEnd))){e.preventDefault();if(c==='Ctrl+L')tout.innerHTML='';else{w('^C\n');$('#tin').value='';if(repl){repl=false;setP()}}return}
+ if(chord&&Date.now()-chord<2500){chord=0;$('#msg').textContent='';const cc='Ctrl+K '+c;for(const m of cmds)if(m[1]&&m[1].split('|').includes(cc)){e.preventDefault();return runCmd(m)}return}
+ if(c==='Ctrl+K'&&document.activeElement!==$('#pi')&&document.activeElement!==$('#qin')){e.preventDefault();chord=Date.now();$('#msg').textContent='(Ctrl+K) was pressed. Waiting for second key of chord…';setTimeout(()=>{if(Date.now()-chord>=2400)$('#msg').textContent=''},2500);return}
+ for(const m of cmds){if(m[1]&&m[1].split('|').includes(c)){if(document.activeElement===$('#pi')||document.activeElement===$('#qin'))return;e.preventDefault();runCmd(m);return}}
+},true);
+$('#sbr').onclick=()=>view('sc',1);$('#ec').onclick=()=>showPanel('pr');$('#pos').onclick=()=>pal(':');$('#enc').onclick=()=>toast('Encoding: UTF-8');
+$('#tabb').onclick=e=>ctx([['Indent Using 2 Spaces',()=>{S.tab=2;apply();store()}],['Indent Using 4 Spaces',()=>{S.tab=4;apply();store()}],['Indent Using 8 Spaces',()=>{S.tab=8;apply();store()}]],e.clientX-60,e.clientY-110);
+$('#eolb').onclick=()=>{S.eol=S.eol==='LF'?'CRLF':'LF';apply();store()};
+$('#engb').onclick=()=>toast($('#engb').textContent);
+$('#rb').onclick=run;
+document.addEventListener('dragover',e=>e.preventDefault());
+document.addEventListener('drop',e=>{e.preventDefault();if(e.dataTransfer&&e.dataTransfer.files.length)importFiles([...e.dataTransfer.files])});
+addEventListener('beforeunload',()=>store());
+addEventListener('resize',()=>setTimeout(paint,50));
+if(innerWidth<760){$('#side').classList.add('hide');}
+apply();render();view(vw,1);if(innerWidth<760)$('#side').classList.add('hide');$$('#act [data-v]').forEach(b=>b.classList.toggle('on',!$('#side').classList.contains('hide')&&b.dataset.v===vw));
+if(active)ta.focus();
+
+/* On-screen shortcut bar: sticky Ctrl/Alt/Shift for the iPad software keyboard */
+(function(){const bar=$('#vkb'),mb=[...bar.querySelectorAll('[data-m]')];
+const paint=()=>mb.forEach(b=>b.classList.toggle('on',!!vm[b.dataset.m]));
+const clr=()=>{vm.c=vm.a=vm.s=0;paint()};
+const kd=(key,code,m)=>{ta.focus();const ev=new KeyboardEvent('keydown',{key,code:code||key,ctrlKey:!!m.c,altKey:!!m.a,shiftKey:!!m.s,bubbles:true,cancelable:true});ta.dispatchEvent(ev);return ev.defaultPrevented};
+const WORD=/\w/;
+function caret(key,m){const v=ta.value,st=ta.selectionStart,en=ta.selectionEnd,bk=ta.selectionDirection==='backward';let f=m.s?(bk?st:en):(key==='ArrowLeft'||key==='ArrowUp'?st:en),a=m.s?(bk?en:st):null,p=f;
+ if(!m.s&&st!==en&&(key==='ArrowLeft'||key==='ArrowRight')&&!m.a&&!m.c){p=key==='ArrowLeft'?st:en}
+ else if(key==='ArrowLeft'||key==='ArrowRight'){const d=key==='ArrowLeft'?-1:1;if(m.c){p=d<0?v.lastIndexOf('\n',p-1)+1:(v.indexOf('\n',p)<0?v.length:v.indexOf('\n',p))}else if(m.a){while(p+d>=0&&p+d<=v.length&&!WORD.test(v[d<0?p-1:p]||''))p+=d;while(p+d>=0&&p+d<=v.length&&WORD.test(v[d<0?p-1:p]||''))p+=d}else p=Math.max(0,Math.min(v.length,p+d))}
+ else{const ls=v.lastIndexOf('\n',p-1)+1,col=p-ls;if(key==='ArrowUp'){if(m.c)p=0;else if(ls>0){const ps=v.lastIndexOf('\n',ls-2)+1;p=Math.min(ps+col,ls-1)}else p=0}else{if(m.c)p=v.length;else{const le=v.indexOf('\n',p);if(le<0)p=v.length;else{const ne=v.indexOf('\n',le+1),e2=ne<0?v.length:ne;p=Math.min(le+1+col,e2)}}}}
+ if(a===null)ta.setSelectionRange(p,p);else ta.setSelectionRange(Math.min(a,p),Math.max(a,p),p<a?'backward':'forward');if(typeof reveal==='function')reveal(p)}
+bar.addEventListener('pointerdown',e=>e.preventDefault());
+bar.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const m=b.dataset.m,k=b.dataset.k,x=b.dataset.x;
+ if(m){vm[m]=vm[m]?0:1;paint();ta.focus();return}
+ if(k){const mod={...vm};if(!kd(k,k,mod)&&k!=='Escape')caret(k,mod);clr();return}
+ if(x==='save')kd('s','KeyS',{c:1});else if(x==='find')kd('f','KeyF',{c:1});else if(x==='comment'){ta.focus();C.comment()}else if(x==='pal')kd('P','KeyP',{c:1,s:1});else if(x==='run')kd('F5','F5',{});
+ else if(x==='fk'){const r=b.getBoundingClientRect();ctx(['F1','F2','F3','F5','F8','F11','F12'].map(f=>[f,()=>kd(f,f,{})]),r.left,r.top-190)}
+ clr()});
+/* clear sticky modifiers after any real key; swallow typed char if a shortcut modifier was active */
+document.addEventListener('keydown',e=>{if(!e.isTrusted||['Control','Shift','Alt','Meta'].includes(e.key))return;if((vm.c||vm.a)&&!e.defaultPrevented)e.preventDefault();if(vm.c||vm.a||vm.s)clr()},true);
+/* fallback: some iPad soft keyboards send no keydown, only beforeinput */
+ta.addEventListener('beforeinput',e=>{if((vm.c||vm.a)&&e.inputType==='insertText'&&e.data&&e.data.length===1){e.preventDefault();const m={...vm};clr();const ch=e.data;kd(ch,/[a-z]/i.test(ch)?'Key'+ch.toUpperCase():/\d/.test(ch)?'Digit'+ch:ch===' '?'Space':ch,m)}});
+const show=()=>bar.classList.toggle('on');
+if(matchMedia('(pointer:coarse)').matches)bar.classList.add('on');
+cmds.push(['Toggle Shortcut Bar','',()=>{show();dispatchEvent(new Event('resize'))}]);
+})();
+
+document.getElementById('ide-run-btn').addEventListener('click',run);
+document.getElementById('ide-preview-btn').addEventListener('click',idePreview);
+document.getElementById('ide-preview-close').addEventListener('click',()=>{document.getElementById('ide-preview').style.display='none'});
+function refreshIdeLang(){const l=currentLang();const hints={Python:'Pyodide browser runtime',HTML:'Browser live preview',CSS:'Browser live preview',JavaScript:'Browser JavaScript preview',Java:'Backend JDK compiler required',MySQL:'Connected MySQL server required',Text:'Open a supported source file'};const a=document.getElementById('ide-language');if(a)a.textContent=l;const h=document.getElementById('ide-hint');if(h)h.textContent=hints[l]||'';}
+const _render=render;render=function(){_render();refreshIdeLang();};refreshIdeLang();
+</script>
+
+<style>
+#mh-auth{position:fixed;inset:0;z-index:10000;background:#111827f2;display:none;align-items:center;justify-content:center;padding:20px;font-family:system-ui,sans-serif}
+#mh-auth .auth-card{width:min(420px,100%);background:#20242b;color:#eee;border:1px solid #454b55;border-radius:14px;padding:26px;box-shadow:0 20px 80px #0009}
+#mh-auth h2{margin:0 0 8px;font-size:22px}#mh-auth p{color:#b8c0cc;font-size:13px;line-height:1.5}
+#mh-auth input{width:100%;box-sizing:border-box;background:#111827;color:#fff;border:1px solid #596273;border-radius:8px;padding:12px;margin:10px 0}
+#mh-auth button{background:#0e639c;color:#fff;border:0;border-radius:8px;padding:11px 16px;font-weight:600;width:100%}#mh-auth .auth-error{color:#ff8c82;min-height:20px;font-size:13px}
+</style>
+<div id="mh-auth" role="dialog" aria-modal="true" aria-labelledby="mh-auth-title"><div class="auth-card"><h2 id="mh-auth-title">MhCoder sign in</h2><p>This private workspace requires the administrator password configured in your server's <code>.env</code> file.</p><form id="mh-auth-form"><input id="mh-auth-password" type="password" autocomplete="current-password" placeholder="Administrator password" required><button type="submit">Sign in</button></form><div id="mh-auth-error" class="auth-error" role="alert"></div></div></div>
+<script>
+(()=>{
+ const layer=document.getElementById('mh-auth'),form=document.getElementById('mh-auth-form'),input=document.getElementById('mh-auth-password'),error=document.getElementById('mh-auth-error');let pending=null;
+ window.mhEnsureAuth=async function(){if(mhCsrf)return true;if(pending)return pending;pending=(async()=>{try{const r=await fetch('/api/auth/session',{cache:'no-store'});const d=await r.json();if(d.authenticated){mhCsrf=d.csrf;layer.style.display='none';return true;}layer.style.display='flex';input.focus();return await new Promise(resolve=>{window.mhAuthResolve=resolve;});}catch(e){layer.style.display='flex';error.textContent='Cannot reach MhCoder backend. Start the Docker services.';return false;}finally{pending=null;}})();return pending;};
+ form.addEventListener('submit',async e=>{e.preventDefault();error.textContent='Signing in…';try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:input.value})});const d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||'Sign-in failed');mhCsrf=d.csrf;input.value='';error.textContent='';layer.style.display='none';if(window.mhAuthResolve){window.mhAuthResolve(true);window.mhAuthResolve=null;}}catch(err){error.textContent=err.message;input.select();}});
+ window.mhLogout=async function(){if(!confirm('Sign out of MhCoder?'))return;try{await fetch('/api/auth/logout',{method:'POST',headers:{'X-CSRF-Token':mhCsrf}});}catch{}mhCsrf='';layer.style.display='flex';input.focus();};
+ window.addEventListener('load',()=>{window.mhEnsureAuth();});
+})();
+</script>
+</body>
+</html>
